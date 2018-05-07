@@ -100,7 +100,7 @@ class InvalidValueException extends Exception {
   /**
    * Construct a {@code InvalidValueException} with no parameter.
    */
-  public InvalidValueException() {};
+  public InvalidValueException() {}
 
   /**
    * Construct a {@code InvalidValueException} with a message parameter.
@@ -108,5 +108,5 @@ class InvalidValueException extends Exception {
    */
   public InvalidValueException(String message){
     super(message);
-  };
+  }
 }

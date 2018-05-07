@@ -54,10 +54,10 @@ public class Main {
     System.out.println("Unknown = Bed Slope");
 
     roc.setUnknown(RectangularOpenChannel.Unknown.BED_SLOPE);
-    roc.setDischarge(1.0);
+    roc.setDischarge(1);
     roc.setWaterDepth(0.989);
     roc.setBaseWidth(1.0);
-    roc.setManningRoughness(0.01);
+    roc.setManningRoughness(0.015);
 
     if (roc.analyze()) {
       System.out.println("Bed slope = " + roc.getBedSlope());
