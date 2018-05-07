@@ -4,13 +4,13 @@ public class OpenChannel {
 
   protected double discharge;
   protected double bedSlope;
-  protected float waterDepth;
-  protected float manningRoughness;
-  protected float wettedPerimeter;
-  protected float wettedArea;
-  protected float hydraulicRadius;
+  protected double waterDepth;
+  protected double manningRoughness;
+  protected double wettedPerimeter;
+  protected double wettedArea;
+  protected double hydraulicRadius;
   protected double averageVelocity;
-  protected float froudeNumber;
+  protected double froudeNumber;
   protected String flowType;
 
   public OpenChannel() {
@@ -29,23 +29,23 @@ public class OpenChannel {
     return bedSlope;
   }
 
-  public float getWaterDepth() {
+  public double getWaterDepth() {
     return waterDepth;
   }
 
-  public float getWettedPerimeter() {
+  public double getWettedPerimeter() {
     return wettedPerimeter;
   }
 
-  public float getWettedArea() {
+  public double getWettedArea() {
     return wettedArea;
   }
 
-  public float getHydraulicRadius() {
+  public double getHydraulicRadius() {
     return hydraulicRadius;
   }
 
-  public float getFroudeNumber() {
+  public double getFroudeNumber() {
     return froudeNumber;
   }
 
