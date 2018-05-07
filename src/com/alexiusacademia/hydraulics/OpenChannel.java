@@ -2,10 +2,6 @@ package com.alexiusacademia.hydraulics;
 
 public class OpenChannel {
 
-  // Unknowns
-  public enum OpenChannelUnknown {
-    DISCHARGE
-  }
   protected double discharge;
   protected double bedSlope;
   protected float waterDepth;
@@ -13,24 +9,17 @@ public class OpenChannel {
   protected float wettedPerimeter;
   protected float wettedArea;
   protected float hydraulicRadius;
+  protected double averageVelocity;
   protected float froudeNumber;
   protected String flowType;
-  protected OpenChannelUnknown unknown;
 
-  public OpenChannel(OpenChannelUnknown unknown) {
-    this.unknown = unknown;
+  public OpenChannel() {
+
   }
 
   /** ****************************************
    * Getters
    ***************************************** */
-  public String getUnknown() {
-    switch (this.unknown) {
-      case DISCHARGE:
-        return "Discharge";
-    }
-    return "";
-  }
 
   public double getDischarge() {
     return discharge;
@@ -67,10 +56,6 @@ public class OpenChannel {
   /** ***************************************
    * Setters
    **************************************** */
-  public void setUnknown(OpenChannelUnknown unknown) {
-    this.unknown = unknown;
-  }
-
   public void setBedSlope(double bedSlope) {
     this.bedSlope = bedSlope;
   }
