@@ -64,11 +64,11 @@ public class OpenChannel {
     this.discharge = discharge;
   }
 
-  public void setWaterDepth(float waterDepth) {
+  public void setWaterDepth(double waterDepth) {
     this.waterDepth = waterDepth;
   }
 
-  public void setManningRoughness(float manningRoughness) {
+  public void setManningRoughness(double manningRoughness) {
     this.manningRoughness = manningRoughness;
   }
 }
