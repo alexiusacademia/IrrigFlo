@@ -11,21 +11,22 @@ public class Main {
     d = 0.989
     n = 0.015
      */
+    System.out.println("Sample Output:");
+    System.out.println("= = = = = = = = = = = = =");
     /**
      * Unknown is discharge
      */
     RectangularOpenChannel roc = new RectangularOpenChannel();
-
+    /*
     System.out.println("Unknown = Discharge");
     roc.setUnknown(RectangularOpenChannel.Unknown.DISCHARGE);
     roc.setBedSlope(0.001);
-    roc.setBaseWidth((float)1.0);
-    roc.setWaterDepth((float)0.989);
-    roc.setManningRoughness((float)0.015);
+    roc.setBaseWidth(1.0);
+    roc.setWaterDepth(0.989);
+    roc.setManningRoughness(0.015);
     roc.analyze();
 
     System.out.println("Discharge = " + roc.getDischarge());
-
     System.out.println("");
     System.out.println("Unknown = WaterDepth");
     roc.setUnknown(RectangularOpenChannel.Unknown.WATER_DEPTH);
@@ -49,16 +50,19 @@ public class Main {
 
     System.out.println("Base width = " + roc.getBaseWidth());
     System.out.println("");
-
+    */
     System.out.println("Unknown = Bed Slope");
 
     roc.setUnknown(RectangularOpenChannel.Unknown.BED_SLOPE);
     roc.setDischarge(1.0);
     roc.setWaterDepth(0.989);
     roc.setBaseWidth(1.0);
-    roc.setManningRoughness(0.015);
-    roc.analyze();
+    roc.setManningRoughness(0.01);
 
-    System.out.println("Bed slope = " + roc.getBedSlope());
+    if (roc.analyze()) {
+      System.out.println("Bed slope = " + roc.getBedSlope());
+    } else {
+      System.out.println("An error has occurred: " + roc.getErrMessage());
+    }
   }
 }

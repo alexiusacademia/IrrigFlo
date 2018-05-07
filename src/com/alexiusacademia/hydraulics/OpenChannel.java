@@ -72,3 +72,41 @@ public class OpenChannel {
     this.manningRoughness = manningRoughness;
   }
 }
+
+/**
+ * A custom exception for invalid dimensions.
+ */
+class DimensionException extends Exception {
+  /**
+   * Constructs a {@code DimensionException} with no parameter.
+   */
+  public DimensionException() {
+
+  }
+
+  /**
+   * Construct a {@code DimensionException} with a message parameter.
+   * @param message A string description of the exception.
+   */
+  public DimensionException(String message) {
+    super(message);
+  }
+}
+
+/**
+ * A custom exception for handling illegal or invalid values or constants.
+ */
+class InvalidValueException extends Exception {
+  /**
+   * Construct a {@code InvalidValueException} with no parameter.
+   */
+  public InvalidValueException() {};
+
+  /**
+   * Construct a {@code InvalidValueException} with a message parameter.
+   * @param message A string description of the exception.
+   */
+  public InvalidValueException(String message){
+    super(message);
+  };
+}
