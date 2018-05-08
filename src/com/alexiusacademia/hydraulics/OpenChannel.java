@@ -49,6 +49,10 @@ public class OpenChannel {
     return froudeNumber;
   }
 
+  public double getManningRoughness() {
+    return manningRoughness;
+  }
+
   public String getFlowType() {
     return flowType;
   }
@@ -71,6 +75,11 @@ public class OpenChannel {
   public void setManningRoughness(double manningRoughness) {
     this.manningRoughness = manningRoughness;
   }
+
+  /**
+   * Methods
+   */
+
 }
 
 /**

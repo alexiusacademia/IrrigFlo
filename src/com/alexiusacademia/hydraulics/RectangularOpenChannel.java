@@ -16,16 +16,17 @@ public class RectangularOpenChannel extends OpenChannel {
   /** *********************************
    * Properties
    ********************************** */
+
   /**
    * Base width or the channel width for rectangular sections.
    */
-  protected double baseWidth;
+  private double baseWidth;
 
   /**
    * The unknown for the flow calculation.
    * Type is derived from the enum Unknown.
    */
-  protected Unknown unknown;
+  private Unknown unknown;
 
   /**
    * Handle if calculation error or exception occurs
@@ -37,12 +38,14 @@ public class RectangularOpenChannel extends OpenChannel {
    */
   private String errMessage;
 
+
   /** *********************************
    * Setters
    ********************************** */
 
   /**
    * Set the bottom width of the channel.
+   *
    * @param baseWidth Bottom width or channel width for rectangular sections.
    */
   public void setBaseWidth(double baseWidth) {
@@ -51,6 +54,7 @@ public class RectangularOpenChannel extends OpenChannel {
 
   /**
    * Set the unknown for the channel.
+   *
    * @param unknown
    */
   public void setUnknown(Unknown unknown) {
@@ -63,6 +67,7 @@ public class RectangularOpenChannel extends OpenChannel {
 
   /**
    * Gets the bottom width or channel width.
+   *
    * @return baseWidth
    */
   public double getBaseWidth() {
@@ -71,6 +76,7 @@ public class RectangularOpenChannel extends OpenChannel {
 
   /**
    * Check if an error has occurred.
+   *
    * @return isError
    */
   public boolean isCalculationSuccessful() {
@@ -79,29 +85,42 @@ public class RectangularOpenChannel extends OpenChannel {
 
   /**
    * Gets the error message.
+   *
    * @return errMessage
    */
   public String getErrMessage() {
     return errMessage;
   }
 
-  /** *********************************
-   * Methods
-   ********************************** */
-  public boolean analyze() {
-    // Get the unknown
-    switch (this.unknown) {
-      case DISCHARGE:
-        solveForDischarge();
-      case WATER_DEPTH:
-        solveForWaterDepth();
-      case BASE_WIDTH:
-        solveForBaseWidth();
-      case BED_SLOPE:
-        solveForBedSlope();
-    }
+  public Unknown getUnknown() {
+    return unknown;
+  }
 
-    return this.isCalculationSuccessful;
+  /**
+   * ********************************
+   * Methods
+   * *********************************
+   */
+  public boolean analyze() {
+    if (isValidInputs()) {
+      // Get the unknown
+      switch (this.unknown) {
+        case DISCHARGE:
+          solveForDischarge();
+          break;
+        case WATER_DEPTH:
+          solveForWaterDepth();
+          break;
+        case BASE_WIDTH:
+          solveForBaseWidth();
+          break;
+        case BED_SLOPE:
+          solveForBedSlope();
+          break;
+      }
+      return this.isCalculationSuccessful;
+    }
+    return false;
   }
 
   /**
@@ -111,34 +130,19 @@ public class RectangularOpenChannel extends OpenChannel {
     double calculatedDischarge = 0.0;
     double trialSlope = 0.0;
 
-    try {
-      if (this.baseWidth <= 0.0) {
-        throw new DimensionException("Base width must be greater than zero!");
-      }
-      if (this.manningRoughness <= 0.0) {
-        throw new InvalidValueException("Roughness coefficient must be a positive value.");
-      }
-
-      while (calculatedDischarge < this.discharge) {
-        trialSlope += 0.00000001;
-        this.wettedArea = this.baseWidth * this.waterDepth;
-        this.wettedPerimeter = this.baseWidth + 2 * this.waterDepth;
-        this.hydraulicRadius = this.wettedArea / this.wettedPerimeter;
-        this.averageVelocity = (1 / this.manningRoughness) * Math.sqrt(trialSlope) * Math.pow(this.hydraulicRadius, (2.0/3.0));
-        calculatedDischarge = this.averageVelocity * this.wettedArea;
-      }
-
-      this.bedSlope = trialSlope;
-
-      this.isCalculationSuccessful = true;
-
-    } catch (DimensionException ex) {
-      this.isCalculationSuccessful = false;
-      this.errMessage = ex.getMessage();
-    } catch (InvalidValueException ex) {
-      this.isCalculationSuccessful = false;
-      this.errMessage = ex.getMessage();
+    while (calculatedDischarge < this.discharge) {
+      trialSlope += 0.00000001;
+      this.wettedArea = this.baseWidth * this.waterDepth;
+      this.wettedPerimeter = this.baseWidth + 2 * this.waterDepth;
+      this.hydraulicRadius = this.wettedArea / this.wettedPerimeter;
+      this.averageVelocity = (1 / this.manningRoughness) * Math.sqrt(trialSlope) * Math.pow(this.hydraulicRadius, (2.0 / 3.0));
+      calculatedDischarge = this.averageVelocity * this.wettedArea;
     }
+
+    this.bedSlope = trialSlope;
+
+    this.isCalculationSuccessful = true;
+
   }
 
   /**
@@ -153,9 +157,11 @@ public class RectangularOpenChannel extends OpenChannel {
       this.wettedArea = trialBaseWidth * this.waterDepth;
       this.wettedPerimeter = trialBaseWidth + 2 * this.waterDepth;
       this.hydraulicRadius = this.wettedArea / this.wettedPerimeter;
-      this.averageVelocity = (1 / this.manningRoughness) * Math.sqrt(this.bedSlope) * Math.pow(this.hydraulicRadius, (2.0/3.0));
+      this.averageVelocity = (1 / this.manningRoughness) * Math.sqrt(this.bedSlope) * Math.pow(this.hydraulicRadius, (2.0 / 3.0));
       calculatedDischarge = this.averageVelocity * this.wettedArea;
     }
+
+    this.isCalculationSuccessful = true;
 
     this.baseWidth = trialBaseWidth;
   }
@@ -172,7 +178,7 @@ public class RectangularOpenChannel extends OpenChannel {
       this.wettedArea = this.baseWidth * trialWaterDepth;
       this.wettedPerimeter = this.baseWidth + 2 * trialWaterDepth;
       this.hydraulicRadius = this.wettedArea / this.wettedPerimeter;
-      this.averageVelocity = (1 / this.manningRoughness) * Math.sqrt(this.bedSlope) * Math.pow(this.hydraulicRadius, (2.0/3.0));
+      this.averageVelocity = (1 / this.manningRoughness) * Math.sqrt(this.bedSlope) * Math.pow(this.hydraulicRadius, (2.0 / 3.0));
       calculatedDischarge = this.averageVelocity * this.wettedArea;
     }
 
@@ -187,9 +193,53 @@ public class RectangularOpenChannel extends OpenChannel {
     this.wettedArea = this.baseWidth * this.waterDepth;
     this.wettedPerimeter = this.baseWidth + 2 * this.waterDepth;
     this.hydraulicRadius = this.wettedArea / this.wettedPerimeter;
-    this.averageVelocity = (1 / this.manningRoughness) * Math.sqrt(this.bedSlope) * Math.pow(this.hydraulicRadius, (2.0/3.0));
+    this.averageVelocity = (1 / this.manningRoughness) * Math.sqrt(this.bedSlope) * Math.pow(this.hydraulicRadius, (2.0 / 3.0));
     this.discharge = this.averageVelocity * this.wettedArea;
 
+  }
+
+  /**
+   * Checks whether all inputs are valid.
+   * @return Boolean Returns true if all the inputs are valid, false otherwise
+   */
+  private boolean isValidInputs() {
+    try {
+      if (this.manningRoughness <= 0) {
+        throw new InvalidValueException("Manning's roughness must be greater than zero.");
+      }
+      if (this.unknown != Unknown.DISCHARGE) {
+        if (this.discharge <= 0) {
+          throw new InvalidValueException("Discharge must be greater than zero.");
+        }
+      }
+      if (this.unknown != Unknown.BED_SLOPE) {
+        if (this.bedSlope <= 0) {
+          throw new InvalidValueException("Bed slope must not be flat or less than zero.");
+        }
+      }
+      if (this.unknown != Unknown.BASE_WIDTH) {
+        if (this.baseWidth == 0) {
+          throw new DimensionException("Base width must be greater than zero.");
+        } else if (this.baseWidth < 0) {
+          throw new DimensionException("Invalid base width dimension.");
+        }
+      }
+      if (this.unknown != Unknown.WATER_DEPTH) {
+        if (this.waterDepth == 0) {
+          throw new DimensionException("Water depth must be greater than zero.");
+        } else if (this.waterDepth < 0) {
+          throw new DimensionException("Invalid depth of water.");
+        }
+      }
+
+    } catch (InvalidValueException | DimensionException e) {
+      this.isCalculationSuccessful = false;
+      this.errMessage = e.getMessage();
+      return false;
+    }
+
+    // Return true if all exceptions are passed
+    return true;
   }
 
 }

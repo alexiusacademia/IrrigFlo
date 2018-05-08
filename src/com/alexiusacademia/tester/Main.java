@@ -40,17 +40,21 @@ public class Main {
 
     System.out.println("");
     System.out.println("Unknown = BaseWidth");
-
+    */
+    System.out.println("Unknown = Base Width");
     roc.setUnknown(RectangularOpenChannel.Unknown.BASE_WIDTH);
     roc.setDischarge(1.0);
     roc.setBedSlope(0.001);
     roc.setWaterDepth(0.989);
-    roc.setManningRoughness((float)0.015);
-    roc.analyze();
+    roc.setManningRoughness(0);
 
-    System.out.println("Base width = " + roc.getBaseWidth());
-    System.out.println("");
-    */
+    if (roc.analyze()) {
+      System.out.println("Base width = " + roc.getBaseWidth());
+    } else {
+      System.out.println("An error has occurred: " + roc.getErrMessage());
+    }
+    System.out.println();
+    /*
     System.out.println("Unknown = Bed Slope");
 
     roc.setUnknown(RectangularOpenChannel.Unknown.BED_SLOPE);
@@ -64,5 +68,6 @@ public class Main {
     } else {
       System.out.println("An error has occurred: " + roc.getErrMessage());
     }
+    */
   }
 }
