@@ -1,5 +1,4 @@
 # IrrigFlo
-
 IrrigFlo is an open source desktop application for solving hydraulics flow calculations in hydraulics ngineering.
 
 Below describes the proposed content of the project:
