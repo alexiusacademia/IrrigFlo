@@ -10,6 +10,12 @@ public class OpenChannel {
   /** ****************************************
    * Properties
    ***************************************** */
+  public enum FlowType {
+    CRITICAL_FLOW,
+    SUBCRITICAL_FLOW,
+    SUPERCRITICAL_FLOW
+  }
+
   protected double discharge;
   protected double bedSlope;
   protected double waterDepth;
@@ -19,7 +25,7 @@ public class OpenChannel {
   protected double hydraulicRadius;
   protected double averageVelocity;
   protected double froudeNumber;
-  protected String flowType;
+  protected FlowType flowType;
   protected double hydraulicDepth;
   protected double dischargeIntensity;
 
@@ -63,7 +69,7 @@ public class OpenChannel {
     return manningRoughness;
   }
 
-  public String getFlowType() {
+  public FlowType getFlowType() {
     return flowType;
   }
 
