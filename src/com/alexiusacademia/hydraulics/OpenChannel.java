@@ -12,6 +12,8 @@ public class OpenChannel {
   protected double averageVelocity;
   protected double froudeNumber;
   protected String flowType;
+  protected double hydraulicDepth;
+  protected double dischargeIntensity;
 
   public OpenChannel() {
 
