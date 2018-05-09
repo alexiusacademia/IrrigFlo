@@ -48,7 +48,7 @@ public class RectangularOpenChannel extends OpenChannel {
   /**
    * Empty constructor.
    */
-  /*public RectangularOpenChannel() {
+  public RectangularOpenChannel() {
     // Default unknown
     this.unknown = Unknown.DISCHARGE;
   }
@@ -57,7 +57,7 @@ public class RectangularOpenChannel extends OpenChannel {
    * Initialize the RectangularOpenChannel with the unknown as given.
    * @param unknown The unknown from the enum Unknown
    */
-  /*public RectangularOpenChannel(Unknown unknown) {
+  public RectangularOpenChannel(Unknown unknown) {
     this.unknown = unknown;
   }
 
@@ -70,14 +70,14 @@ public class RectangularOpenChannel extends OpenChannel {
    * @param waterDepth The depth of the water.
    * @param manningRoughness The Manning's roughness coefficient.
    */
-  /*public RectangularOpenChannel(Unknown unknown, double bedSlope, double baseWidth, double waterDepth,
+  public RectangularOpenChannel(Unknown unknown, double bedSlope, double baseWidth, double waterDepth,
                                 double manningRoughness) {
     this.unknown = unknown;
     this.bedSlope = bedSlope;
     this.baseWidth = baseWidth;
     this.waterDepth = waterDepth;
     this.manningRoughness = manningRoughness;
-  }*/
+  }
 
   /* **********************************
    * Setters
