@@ -23,12 +23,13 @@ public class RectangularChannel {
     roc.setManningRoughness(manningRoughness);
 
     if (roc.analyze()) {
-      System.out.println("Water Depth = " + roc.getWaterDepth());
+      println("Water Depth = " + roc.getWaterDepth());
     } else {
-      System.out.println("Calculation unsuccessful.");
-      System.out.println(roc.getErrMessage());
+      println("Calculation unsuccessful.");
+      println(roc.getErrMessage());
     }
 
+    printLine();
     RectangularOpenChannel roc2 = new RectangularOpenChannel(RectangularOpenChannel.Unknown.BASE_WIDTH);
     roc2.setDischarge(discharge);
     roc2.setBedSlope(bedSlope);
@@ -36,10 +37,17 @@ public class RectangularChannel {
     roc2.setManningRoughness(manningRoughness);
     if (roc2.analyze()) {
       System.out.println("Base Width = " + Math.round(roc2.getBaseWidth()));
+      println("Froude number = " + roc2.getFroudeNumber());
+      println("Flow type = " + roc2.getFlowType().toString());
+      println("Critical depth = " + roc2.getCriticalDepth());
     } else {
       System.out.println("Calculation unsuccessful.");
       System.out.println(roc2.getErrMessage());
     }
+  }
+
+  private static void printLine() {
+    println("- - - - - - - - - - - - - -");
   }
 
   private static void println(String s) {
