@@ -31,16 +31,6 @@ public class RectangularOpenChannel extends OpenChannel {
    */
   private Unknown unknown;
 
-  /**
-   * Handle if calculation error or exception occurs
-   */
-  private boolean isCalculationSuccessful;
-
-  /**
-   * Describe message about an error.
-   */
-  private String errMessage;
-
   /* **********************************
    * Constructors
    ***********************************/
@@ -112,24 +102,6 @@ public class RectangularOpenChannel extends OpenChannel {
    */
   public double getBaseWidth() {
     return baseWidth;
-  }
-
-  /**
-   * Check if an error has occurred.
-   *
-   * @return isError
-   */
-  public boolean isCalculationSuccessful() {
-    return isCalculationSuccessful;
-  }
-
-  /**
-   * Gets the error message.
-   *
-   * @return errMessage
-   */
-  public String getErrMessage() {
-    return errMessage;
   }
 
   public Unknown getUnknown() {

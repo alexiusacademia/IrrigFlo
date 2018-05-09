@@ -16,20 +16,48 @@ public class OpenChannel {
     SUPERCRITICAL_FLOW
   }
 
+  /** Channel flow rate */
   protected double discharge;
+
+  /** Channel bed slope */
   protected double bedSlope;
+
+  /** Channel water depth */
   protected double waterDepth;
+
+  /** Manning's roughness coefficient */
   protected double manningRoughness;
+
+  /** Length of wet in the section */
   protected double wettedPerimeter;
+
+  /** Cross sectional area of water */
   protected double wettedArea;
+
+  /** Higher hydraulic radius means higher flow velocity */
   protected double hydraulicRadius;
+
+  /** The average velocity of a channel */
   protected double averageVelocity;
+
+  /** Froude number */
   protected double froudeNumber;
+
+  /** Flow type defined in enum {@code FlowType} */
   protected FlowType flowType;
+
+  /** Properties for critical flow calculation */
   protected double hydraulicDepth;
   protected double dischargeIntensity;
   protected double criticalDepth;
 
+  /** Handle if calculation error or exception occurs */
+  protected boolean isCalculationSuccessful;
+
+  /** Describe message about an error. */
+  protected String errMessage;
+
+  /** Creates a parameterless instance of OpenChannel. */
   public OpenChannel() {
 
   }
@@ -84,6 +112,22 @@ public class OpenChannel {
 
   public double getCriticalDepth() {
     return criticalDepth;
+  }
+
+  /**
+   * Check if an error has occurred.
+   * @return isError
+   */
+  public boolean isCalculationSuccessful() {
+    return isCalculationSuccessful;
+  }
+
+  /**
+   * Gets the error message.
+   * @return errMessage
+   */
+  public String getErrMessage() {
+    return errMessage;
   }
 
   /** ***************************************
