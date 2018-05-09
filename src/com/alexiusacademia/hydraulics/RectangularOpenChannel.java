@@ -41,10 +41,47 @@ public class RectangularOpenChannel extends OpenChannel {
    */
   private String errMessage;
 
+  /* **********************************
+   * Constructors
+   ***********************************/
 
-  /** *********************************
+  /**
+   * Empty constructor.
+   */
+  /*public RectangularOpenChannel() {
+    // Default unknown
+    this.unknown = Unknown.DISCHARGE;
+  }
+
+  /**
+   * Initialize the RectangularOpenChannel with the unknown as given.
+   * @param unknown The unknown from the enum Unknown
+   */
+  /*public RectangularOpenChannel(Unknown unknown) {
+    this.unknown = unknown;
+  }
+
+  /**
+   * Initializes a RectangularOpenChannel with given unknown.
+   * The unknown is assumed to be the discharge and all the other inputs are required.
+   * @param unknown The unknown from the enum Unknown
+   * @param bedSlope The channel slope.
+   * @param baseWidth The channel width at the bottom.
+   * @param waterDepth The depth of the water.
+   * @param manningRoughness The Manning's roughness coefficient.
+   */
+  /*public RectangularOpenChannel(Unknown unknown, double bedSlope, double baseWidth, double waterDepth,
+                                double manningRoughness) {
+    this.unknown = unknown;
+    this.bedSlope = bedSlope;
+    this.baseWidth = baseWidth;
+    this.waterDepth = waterDepth;
+    this.manningRoughness = manningRoughness;
+  }*/
+
+  /* **********************************
    * Setters
-   ********************************** */
+   ***********************************/
 
   /**
    * Set the bottom width of the channel.
@@ -144,7 +181,6 @@ public class RectangularOpenChannel extends OpenChannel {
     }
 
     this.bedSlope = trialSlope;
-
     this.isCalculationSuccessful = true;
 
   }
@@ -165,9 +201,8 @@ public class RectangularOpenChannel extends OpenChannel {
       calculatedDischarge = this.averageVelocity * this.wettedArea;
     }
 
-    this.isCalculationSuccessful = true;
-
     this.baseWidth = trialBaseWidth;
+    this.isCalculationSuccessful = true;
   }
 
   /**
@@ -187,6 +222,7 @@ public class RectangularOpenChannel extends OpenChannel {
     }
 
     this.waterDepth = trialWaterDepth;
+    this.isCalculationSuccessful = true;
   }
 
   /**
@@ -200,6 +236,7 @@ public class RectangularOpenChannel extends OpenChannel {
     this.averageVelocity = (1 / this.manningRoughness) * Math.sqrt(this.bedSlope) * Math.pow(this.hydraulicRadius, (2.0 / 3.0));
     this.discharge = this.averageVelocity * this.wettedArea;
 
+    this.isCalculationSuccessful = true;
   }
 
   /**
