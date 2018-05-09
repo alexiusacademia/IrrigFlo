@@ -2,6 +2,14 @@ package com.alexiusacademia.hydraulics;
 
 public class OpenChannel {
 
+  /** ****************************************
+   * Constants
+   ***************************************** */
+  protected final double GRAVITY_METRIC = 9.81;
+
+  /** ****************************************
+   * Properties
+   ***************************************** */
   protected double discharge;
   protected double bedSlope;
   protected double waterDepth;

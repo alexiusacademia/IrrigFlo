@@ -121,6 +121,7 @@ public class RectangularOpenChannel extends OpenChannel {
           solveForBedSlope();
           break;
       }
+      solveForCriticalFlow();
       return this.isCalculationSuccessful;
     }
     return false;
@@ -199,6 +200,18 @@ public class RectangularOpenChannel extends OpenChannel {
     this.averageVelocity = (1 / this.manningRoughness) * Math.sqrt(this.bedSlope) * Math.pow(this.hydraulicRadius, (2.0 / 3.0));
     this.discharge = this.averageVelocity * this.wettedArea;
 
+  }
+
+  /**
+   * Solve for critical flow properties (e.g. critical depth, froude number, flow type ...)
+   */
+  private void solveForCriticalFlow() {
+    // Hydraulic depth
+    this.hydraulicDepth = this.wettedArea / this.baseWidth;
+
+    this.froudeNumber = this.averageVelocity / Math.sqrt(this.GRAVITY_METRIC * this.hydraulicDepth);
+
+    
   }
 
   /**
