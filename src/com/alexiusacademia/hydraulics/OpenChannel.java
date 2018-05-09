@@ -59,6 +59,14 @@ public class OpenChannel {
     return flowType;
   }
 
+  public double getHydraulicDepth() {
+    return hydraulicDepth;
+  }
+
+  public double getDischargeIntensity() {
+    return dischargeIntensity;
+  }
+
   /** ***************************************
    * Setters
    **************************************** */
