@@ -1,10 +1,13 @@
 package com.alexiusacademia.hydraulics;
 
-import com.sun.xml.internal.ws.api.message.ExceptionHasMessage;
-
+/**
+ * Rectangular open channel
+ * An extension of OpenChannel class
+ * For rectangular shaped channels
+ */
 public class RectangularOpenChannel extends OpenChannel {
   /**
-   * Unknowns
+   * Unknowns enumeration
    */
   public enum Unknown {
     DISCHARGE,
