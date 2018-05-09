@@ -246,9 +246,23 @@ public class RectangularOpenChannel extends OpenChannel {
     // Hydraulic depth
     this.hydraulicDepth = this.wettedArea / this.baseWidth;
 
+    // Froude number
     this.froudeNumber = this.averageVelocity / Math.sqrt(this.GRAVITY_METRIC * this.hydraulicDepth);
 
-    
+    // Flow type
+    if (this.froudeNumber == 1) {
+      this.flowType = FlowType.CRITICAL_FLOW;
+    } else if (this.froudeNumber < 1) {
+      this.flowType = FlowType.SUBCRITICAL_FLOW;
+    } else {
+      this.flowType = FlowType.SUPERCRITICAL_FLOW;
+    }
+
+    // Discharge intensity
+    this.dischargeIntensity = this.discharge / this.baseWidth;
+
+    // Critical depth
+    this.criticalDepth = Math.pow(Math.pow(this.dischargeIntensity, 2) / this.GRAVITY_METRIC, (1.0/3.0));
   }
 
   /**

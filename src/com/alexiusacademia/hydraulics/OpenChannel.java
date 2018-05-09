@@ -28,6 +28,7 @@ public class OpenChannel {
   protected FlowType flowType;
   protected double hydraulicDepth;
   protected double dischargeIntensity;
+  protected double criticalDepth;
 
   public OpenChannel() {
 
