@@ -82,6 +82,10 @@ public class OpenChannel {
     return dischargeIntensity;
   }
 
+  public double getCriticalDepth() {
+    return criticalDepth;
+  }
+
   /** ***************************************
    * Setters
    **************************************** */
