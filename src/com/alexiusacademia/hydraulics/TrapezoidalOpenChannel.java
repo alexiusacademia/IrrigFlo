@@ -12,7 +12,10 @@ public class TrapezoidalOpenChannel extends OpenChannel {
    ***********************************/
   // Unknown class
   public enum Unknown {
-    DISCHARGE, BED_SLOPE, WATER_DEPTH, BASE_WIDTH
+    DISCHARGE,
+    BED_SLOPE,
+    WATER_DEPTH,
+    BASE_WIDTH
   }
 
   // Width at the bottom (smallest width) of the section
@@ -33,6 +36,14 @@ public class TrapezoidalOpenChannel extends OpenChannel {
   public TrapezoidalOpenChannel() {
     // Set the default unknown if not set
     this.unknown = Unknown.DISCHARGE;
+  }
+
+  /**
+   * Creates a {@code TrapezoidalOpenChannel} with given unknown.
+   * @param unknown The unknown from the enum Unknown
+   */
+  public TrapezoidalOpenChannel(Unknown unknown) {
+    this.unknown = unknown;
   }
 
   /**
@@ -117,6 +128,7 @@ public class TrapezoidalOpenChannel extends OpenChannel {
           solveForBaseWidth();
           break;
       }
+      return this.isCalculationSuccessful;
     }
     return false;
   }
@@ -139,6 +151,7 @@ public class TrapezoidalOpenChannel extends OpenChannel {
     }
 
     this.baseWidth = trialBaseWidth;
+    this.isCalculationSuccessful = true;
   }
 
   /**
@@ -159,6 +172,7 @@ public class TrapezoidalOpenChannel extends OpenChannel {
     }
 
     this.waterDepth = trialWaterDepth;
+    this.isCalculationSuccessful = true;
   }
 
 
@@ -180,6 +194,7 @@ public class TrapezoidalOpenChannel extends OpenChannel {
     }
 
     this.bedSlope = trialSlope;
+    this.isCalculationSuccessful = true;
   }
 
   /**
@@ -192,6 +207,7 @@ public class TrapezoidalOpenChannel extends OpenChannel {
     this.averageVelocity = (1 / this.manningRoughness) * Math.sqrt(this.bedSlope) *
             Math.pow(this.hydraulicRadius, (2.0/3.0));
     this.discharge = this.averageVelocity * this.wettedArea;
+    this.isCalculationSuccessful = true;
   }
 
   /**

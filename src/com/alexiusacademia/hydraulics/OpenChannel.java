@@ -70,6 +70,10 @@ public class OpenChannel {
     return discharge;
   }
 
+  public double getAverageVelocity() {
+    return averageVelocity;
+  }
+
   public double getBedSlope() {
     return bedSlope;
   }
