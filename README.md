@@ -10,8 +10,8 @@ Below describes the proposed content of the project:
 #### Libraries:
 **Open Channel Flow**
 ---
-- [ ]  Rectangular Channel
-- [ ]  Trapezoidal Channel
+- [x]  Rectangular Channel
+- [x]  Trapezoidal Channel
 - [ ]  Circular Channel
 - [ ]  Irregular Section Channel
 
