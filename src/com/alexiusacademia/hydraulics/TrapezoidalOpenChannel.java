@@ -239,7 +239,7 @@ public class TrapezoidalOpenChannel extends OpenChannel {
 
     Pc = 2 * yc * Math.sqrt(Math.pow(this.sideSlope,2) + 1) + this.baseWidth;
     Rc = Ac / Pc;
-    Sc = Math.pow(this.discharge / (Ac * Math.pow(Rc, (2.0/3.0))), 2);
+    Sc = Math.pow(this.discharge / (Ac * Math.pow(Rc, (2.0/3.0))) * this.manningRoughness, 2);
     this.criticalSlope = Sc;
 
     // Solve for froude number

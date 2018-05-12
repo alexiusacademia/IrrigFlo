@@ -37,6 +37,7 @@ public class TrapezoidalChannel {
       printLine("Critical depth = " + toc.getCriticalDepth());
       printLine("Froude number = " + toc.getFroudeNumber());
       printLine("Flow Type = " + toc.getFlowType());
+      printLine("Critical Slope = " + toc.getCriticalSlope());
     } else {
       printLine("An error has occurred: " + toc.getErrMessage());
     }
