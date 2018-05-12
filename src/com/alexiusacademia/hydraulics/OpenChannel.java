@@ -11,9 +11,9 @@ public class OpenChannel {
    * Properties
    ***************************************** */
   public enum FlowType {
-    CRITICAL_FLOW,
-    SUBCRITICAL_FLOW,
-    SUPERCRITICAL_FLOW
+    CRITICAL,
+    SUBCRITICAL,
+    SUPERCRITICAL
   }
 
   /** Channel flow rate */
@@ -50,6 +50,7 @@ public class OpenChannel {
   protected double hydraulicDepth;
   protected double dischargeIntensity;
   protected double criticalDepth;
+  protected double criticalSlope;
 
   /** Handle if calculation error or exception occurs */
   protected boolean isCalculationSuccessful;
@@ -118,6 +119,10 @@ public class OpenChannel {
     return criticalDepth;
   }
 
+  public double getCriticalSlope() {
+    return criticalSlope;
+  }
+
   /**
    * Check if an error has occurred.
    * @return isError
@@ -156,6 +161,16 @@ public class OpenChannel {
   /**
    * Methods
    */
+  protected void flowType() {
+    // Flow type
+    if (this.froudeNumber == 1) {
+      this.flowType = FlowType.CRITICAL;
+    } else if (this.froudeNumber < 1) {
+      this.flowType = FlowType.SUBCRITICAL;
+    } else {
+      this.flowType = FlowType.SUPERCRITICAL;
+    }
+  }
 
 }
 

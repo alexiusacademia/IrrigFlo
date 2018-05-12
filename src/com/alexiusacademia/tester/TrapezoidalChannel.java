@@ -33,6 +33,10 @@ public class TrapezoidalChannel {
       printLine("Discharge = " + toc.getDischarge());
       printLine("Average velocity = " + toc.getAverageVelocity());
       printLine("Wetted area = " + toc.getWettedArea());
+      printDash();
+      printLine("Critical depth = " + toc.getCriticalDepth());
+      printLine("Froude number = " + toc.getFroudeNumber());
+      printLine("Flow Type = " + toc.getFlowType());
     } else {
       printLine("An error has occurred: " + toc.getErrMessage());
     }

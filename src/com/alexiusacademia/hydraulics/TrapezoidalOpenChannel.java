@@ -128,6 +128,7 @@ public class TrapezoidalOpenChannel extends OpenChannel {
           solveForBaseWidth();
           break;
       }
+      solveForCriticalFlow();
       return this.isCalculationSuccessful;
     }
     return false;
@@ -208,6 +209,46 @@ public class TrapezoidalOpenChannel extends OpenChannel {
             Math.pow(this.hydraulicRadius, (2.0/3.0));
     this.discharge = this.averageVelocity * this.wettedArea;
     this.isCalculationSuccessful = true;
+  }
+
+  /**
+   * Solve for critical flow properties (e.g. critical depth, froude number, flow type ...)
+   */
+  private void solveForCriticalFlow() {
+    double Q2g = Math.pow(this.discharge, 2) / this.GRAVITY_METRIC;
+
+    double tester = 0;
+
+    // Critical depth
+    double yc = 0;
+
+    // Critical area, perimeter, hydraulic radius, critical slope
+    double Ac = 0, Pc, Rc, Sc;
+
+    // Top width
+    double T = 0;
+
+    while (tester < Q2g) {
+      yc += 0.00001;
+      T = this.baseWidth + 2 * this.sideSlope * yc;
+      Ac = (T + this.baseWidth) / 2 * yc;
+      tester = Math.pow(Ac, 3) / T;
+    }
+
+    this.criticalDepth = yc;
+
+    Pc = 2 * yc * Math.sqrt(Math.pow(this.sideSlope,2) + 1) + this.baseWidth;
+    Rc = Ac / Pc;
+    Sc = Math.pow(this.discharge / (Ac * Math.pow(Rc, (2.0/3.0))), 2);
+    this.criticalSlope = Sc;
+
+    // Solve for froude number
+    double topWidth = this.baseWidth + 2 * this.sideSlope * this.waterDepth;
+    this.hydraulicDepth = this.wettedArea / topWidth;
+    this.froudeNumber = this.averageVelocity / Math.sqrt(this.GRAVITY_METRIC * this.hydraulicDepth);
+
+    // Select the flow type
+    this.flowType();
   }
 
   /**

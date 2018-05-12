@@ -221,14 +221,8 @@ public class RectangularOpenChannel extends OpenChannel {
     // Froude number
     this.froudeNumber = this.averageVelocity / Math.sqrt(this.GRAVITY_METRIC * this.hydraulicDepth);
 
-    // Flow type
-    if (this.froudeNumber == 1) {
-      this.flowType = FlowType.CRITICAL_FLOW;
-    } else if (this.froudeNumber < 1) {
-      this.flowType = FlowType.SUBCRITICAL_FLOW;
-    } else {
-      this.flowType = FlowType.SUPERCRITICAL_FLOW;
-    }
+    // Select the flow type
+    this.flowType();
 
     // Discharge intensity
     this.dischargeIntensity = this.discharge / this.baseWidth;
