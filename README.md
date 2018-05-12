@@ -15,13 +15,21 @@ Below describes the proposed content of the project:
 - [ ]  Circular Channel
 - [ ]  Irregular Section Channel
 
-**Weirs/Dams**
+**Weirs**
 ---
 - [ ]  Rectangular Weir
 - [ ]  Triangular Weir
 - [ ]  Sharp-crested Weir
 - [ ]  Broad-crested Weir
 - [ ]  Ogee Weir
+
+**Dams**
+---
+- [ ]  Dam Reservoir Operation Study
+
+**Hydrology**
+---
+- [ ]  Regional Flood Frequency Analysis
 
 #### GUI
 **Open Channel Flow**
