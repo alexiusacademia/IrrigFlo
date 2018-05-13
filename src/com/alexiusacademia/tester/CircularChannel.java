@@ -11,8 +11,8 @@ public class CircularChannel {
     double manning = 0.015;
     double discharge = 0.551;
 
-    CircularOpenChannel coc = new CircularOpenChannel(CircularOpenChannel.Unknown.DIAMETER);
-    // coc.setDiameter(diameter);
+    CircularOpenChannel coc = new CircularOpenChannel(CircularOpenChannel.Unknown.BED_SLOPE);
+    coc.setDiameter(diameter);
     coc.setBedSlope(slope);
     coc.setWaterDepth(waterDepth);
     coc.setManningRoughness(manning);
@@ -22,7 +22,7 @@ public class CircularChannel {
     printDash();
 
     if (coc.analyze()) {
-      printLine("Diameter = " + coc.getDiameter());
+      printLine("Bed Slope = " + coc.getBedSlope());
     } else {
       printLine("An error has occured: " + coc.getErrMessage());
     }

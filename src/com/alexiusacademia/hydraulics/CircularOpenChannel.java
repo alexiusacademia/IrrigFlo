@@ -10,6 +10,7 @@ public class CircularOpenChannel extends OpenChannel {
   // Unknown class
   public enum Unknown {
     DISCHARGE,
+    BED_SLOPE,
     DIAMETER
   }
 
@@ -97,12 +98,64 @@ public class CircularOpenChannel extends OpenChannel {
         case DIAMETER:
           solveForDiameter();
           break;
+        case BED_SLOPE:
+          solveForBedSlope();
+          break;
       }
       solveForCriticalFlow();
       return this.isCalculationSuccessful;
     }
 
     return false;
+  }
+
+  /**
+   * Solve for the unknown bed slope
+   */
+  private void solveForBedSlope() {
+    // Shorten the variables
+    double h = this.waterDepth;
+    double d = this.diameter;
+    double tetha;
+
+    // Make sure bed slope starts at zero
+    this.bedSlope = 0;
+
+    calculatedDischarge = 0.0;
+
+    while (calculatedDischarge < this.discharge) {
+      this.bedSlope += 0.0000001;
+      this.almostFull = (h >= (d / 2));
+      // Calculate tetha
+      if (this.almostFull) {
+        tetha = 2 * Math.acos((2 * h - d)/d) * 180 / Math.PI;
+      } else {
+        tetha = 2 * Math.acos((d - 2 * h)/d) * 180 / Math.PI;
+      }
+
+      // Calculate area of triangle
+      double aTri;
+      aTri = Math.pow(d, 2) * Math.sin(tetha * Math.PI / 180) / 8;
+
+      // Calculate rea of sector
+      double aSec;
+      if (this.almostFull) {
+        aSec = Math.PI * Math.pow(d, 2) * (360 - tetha) / 1440;
+        this.wettedArea = aSec + aTri;
+        this.wettedPerimeter = Math.PI * d * (360 - tetha) / 360;
+      } else {
+        aSec = tetha * Math.PI * Math.pow(d, 2) / 1440;
+        this.wettedArea = aSec - aTri;
+        this.wettedPerimeter = Math.PI * d * tetha / 360;
+      }
+
+      this.hydraulicRadius = this.wettedArea / this.wettedPerimeter;
+      this.averageVelocity = (1 / this.manningRoughness) * Math.sqrt(this.bedSlope) *
+              Math.pow(this.hydraulicRadius, (2.0/ 3.0));
+      calculatedDischarge = this.averageVelocity * this.wettedArea;
+    }
+
+    this.isCalculationSuccessful = true;
   }
 
   /**
