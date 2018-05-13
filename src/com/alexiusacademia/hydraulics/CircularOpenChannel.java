@@ -11,7 +11,8 @@ public class CircularOpenChannel extends OpenChannel {
   public enum Unknown {
     DISCHARGE,
     BED_SLOPE,
-    DIAMETER
+    DIAMETER,
+    WATER_DEPTH
   }
 
   // Pipe internal diameter
@@ -101,6 +102,9 @@ public class CircularOpenChannel extends OpenChannel {
         case BED_SLOPE:
           solveForBedSlope();
           break;
+        case WATER_DEPTH:
+          solveForWaterDepth();
+          break;
       }
       solveForCriticalFlow();
       return this.isCalculationSuccessful;
@@ -110,13 +114,61 @@ public class CircularOpenChannel extends OpenChannel {
   }
 
   /**
+   * Solve for the unknown water depth
+   */
+  private void solveForWaterDepth() {
+    // Shorten the variables
+    double h = 0;
+    double d = this.diameter;
+    double theta;
+
+    calculatedDischarge = 0.0;
+
+    while (calculatedDischarge < this.discharge) {
+      h += 0.0001;
+      this.almostFull = (h >= (d / 2));
+      // Calculate theta
+      if (this.almostFull) {
+        theta = 2 * Math.acos((2 * h - d)/d) * 180 / Math.PI;
+      } else {
+        theta = 2 * Math.acos((d - 2 * h)/d) * 180 / Math.PI;
+      }
+
+      // Calculate area of triangle
+      double aTri;
+      aTri = Math.pow(d, 2) * Math.sin(theta * Math.PI / 180) / 8;
+
+      // Calculate rea of sector
+      double aSec;
+      if (this.almostFull) {
+        aSec = Math.PI * Math.pow(d, 2) * (360 - theta) / 1440;
+        this.wettedArea = aSec + aTri;
+        this.wettedPerimeter = Math.PI * d * (360 - theta) / 360;
+      } else {
+        aSec = theta * Math.PI * Math.pow(d, 2) / 1440;
+        this.wettedArea = aSec - aTri;
+        this.wettedPerimeter = Math.PI * d * theta / 360;
+      }
+
+      this.hydraulicRadius = this.wettedArea / this.wettedPerimeter;
+      this.averageVelocity = (1 / this.manningRoughness) * Math.sqrt(this.bedSlope) *
+              Math.pow(this.hydraulicRadius, (2.0/ 3.0));
+      calculatedDischarge = this.averageVelocity * this.wettedArea;
+    }
+
+    this.waterDepth = h;
+
+    this.isCalculationSuccessful = true;
+  }
+
+  /**
    * Solve for the unknown bed slope
    */
   private void solveForBedSlope() {
     // Shorten the variables
     double h = this.waterDepth;
     double d = this.diameter;
-    double tetha;
+    double theta;
 
     // Make sure bed slope starts at zero
     this.bedSlope = 0;
@@ -126,27 +178,27 @@ public class CircularOpenChannel extends OpenChannel {
     while (calculatedDischarge < this.discharge) {
       this.bedSlope += 0.0000001;
       this.almostFull = (h >= (d / 2));
-      // Calculate tetha
+      // Calculate theta
       if (this.almostFull) {
-        tetha = 2 * Math.acos((2 * h - d)/d) * 180 / Math.PI;
+        theta = 2 * Math.acos((2 * h - d)/d) * 180 / Math.PI;
       } else {
-        tetha = 2 * Math.acos((d - 2 * h)/d) * 180 / Math.PI;
+        theta = 2 * Math.acos((d - 2 * h)/d) * 180 / Math.PI;
       }
 
       // Calculate area of triangle
       double aTri;
-      aTri = Math.pow(d, 2) * Math.sin(tetha * Math.PI / 180) / 8;
+      aTri = Math.pow(d, 2) * Math.sin(theta * Math.PI / 180) / 8;
 
       // Calculate rea of sector
       double aSec;
       if (this.almostFull) {
-        aSec = Math.PI * Math.pow(d, 2) * (360 - tetha) / 1440;
+        aSec = Math.PI * Math.pow(d, 2) * (360 - theta) / 1440;
         this.wettedArea = aSec + aTri;
-        this.wettedPerimeter = Math.PI * d * (360 - tetha) / 360;
+        this.wettedPerimeter = Math.PI * d * (360 - theta) / 360;
       } else {
-        aSec = tetha * Math.PI * Math.pow(d, 2) / 1440;
+        aSec = theta * Math.PI * Math.pow(d, 2) / 1440;
         this.wettedArea = aSec - aTri;
-        this.wettedPerimeter = Math.PI * d * tetha / 360;
+        this.wettedPerimeter = Math.PI * d * theta / 360;
       }
 
       this.hydraulicRadius = this.wettedArea / this.wettedPerimeter;
@@ -165,34 +217,34 @@ public class CircularOpenChannel extends OpenChannel {
     // Shorten the variables
     double h = this.waterDepth;
     double d = h;
-    double tetha;
+    double theta;
 
     calculatedDischarge = 0.0;
 
     while (calculatedDischarge < this.discharge) {
       d += 0.00001;
       this.almostFull = (h >= (d / 2));
-      // Calculate tetha
+      // Calculate theta
       if (this.almostFull) {
-        tetha = 2 * Math.acos((2 * h - d)/d) * 180 / Math.PI;
+        theta = 2 * Math.acos((2 * h - d)/d) * 180 / Math.PI;
       } else {
-        tetha = 2 * Math.acos((d - 2 * h)/d) * 180 / Math.PI;
+        theta = 2 * Math.acos((d - 2 * h)/d) * 180 / Math.PI;
       }
 
       // Calculate area of triangle
       double aTri;
-      aTri = Math.pow(d, 2) * Math.sin(tetha * Math.PI / 180) / 8;
+      aTri = Math.pow(d, 2) * Math.sin(theta * Math.PI / 180) / 8;
 
       // Calculate rea of sector
       double aSec;
       if (this.almostFull) {
-        aSec = Math.PI * Math.pow(d, 2) * (360 - tetha) / 1440;
+        aSec = Math.PI * Math.pow(d, 2) * (360 - theta) / 1440;
         this.wettedArea = aSec + aTri;
-        this.wettedPerimeter = Math.PI * d * (360 - tetha) / 360;
+        this.wettedPerimeter = Math.PI * d * (360 - theta) / 360;
       } else {
-        aSec = tetha * Math.PI * Math.pow(d, 2) / 1440;
+        aSec = theta * Math.PI * Math.pow(d, 2) / 1440;
         this.wettedArea = aSec - aTri;
-        this.wettedPerimeter = Math.PI * d * tetha / 360;
+        this.wettedPerimeter = Math.PI * d * theta / 360;
       }
 
       this.hydraulicRadius = this.wettedArea / this.wettedPerimeter;
@@ -212,31 +264,31 @@ public class CircularOpenChannel extends OpenChannel {
     // Shorten the variables
     double h = this.waterDepth;
     double d = this.diameter;
-    double tetha;
+    double theta;
 
     this.almostFull = (h >= (d / 2));
 
-    // Calculate tetha
+    // Calculate theta
     if (this.almostFull) {
-      tetha = 2 * Math.acos((2 * h - d)/d) * 180 / Math.PI;
+      theta = 2 * Math.acos((2 * h - d)/d) * 180 / Math.PI;
     } else {
-      tetha = 2 * Math.acos((d - 2 * h)/d) * 180 / Math.PI;
+      theta = 2 * Math.acos((d - 2 * h)/d) * 180 / Math.PI;
     }
 
     // Calculate area of triangle
     double aTri;
-    aTri = Math.pow(d, 2) * Math.sin(tetha * Math.PI / 180) / 8;
+    aTri = Math.pow(d, 2) * Math.sin(theta * Math.PI / 180) / 8;
 
     // Calculate rea of sector
     double aSec;
     if (this.almostFull) {
-      aSec = Math.PI * Math.pow(d, 2) * (360 - tetha) / 1440;
+      aSec = Math.PI * Math.pow(d, 2) * (360 - theta) / 1440;
       this.wettedArea = aSec + aTri;
-      this.wettedPerimeter = Math.PI * d * (360 - tetha) / 360;
+      this.wettedPerimeter = Math.PI * d * (360 - theta) / 360;
     } else {
-      aSec = tetha * Math.PI * Math.pow(d, 2) / 1440;
+      aSec = theta * Math.PI * Math.pow(d, 2) / 1440;
       this.wettedArea = aSec - aTri;
-      this.wettedPerimeter = Math.PI * d * tetha / 360;
+      this.wettedPerimeter = Math.PI * d * theta / 360;
     }
 
     this.hydraulicRadius = this.wettedArea / this.wettedPerimeter;
