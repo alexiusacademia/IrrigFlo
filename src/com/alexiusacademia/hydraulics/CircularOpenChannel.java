@@ -94,6 +94,9 @@ public class CircularOpenChannel extends OpenChannel {
         case DISCHARGE:
           solveForDischarge();
           break;
+        case DIAMETER:
+          solveForDiameter();
+          break;
       }
       solveForCriticalFlow();
       return this.isCalculationSuccessful;
@@ -102,12 +105,60 @@ public class CircularOpenChannel extends OpenChannel {
     return false;
   }
 
+  /**
+   * Solve for the unknown diameter
+   */
+  private void solveForDiameter() {
+    // Shorten the variables
+    double h = this.waterDepth;
+    double d = h;
+    double tetha;
+
+    calculatedDischarge = 0.0;
+
+    while (calculatedDischarge < this.discharge) {
+      d += 0.00001;
+      this.almostFull = (h >= (d / 2));
+      // Calculate tetha
+      if (this.almostFull) {
+        tetha = 2 * Math.acos((2 * h - d)/d) * 180 / Math.PI;
+      } else {
+        tetha = 2 * Math.acos((d - 2 * h)/d) * 180 / Math.PI;
+      }
+
+      // Calculate area of triangle
+      double aTri;
+      aTri = Math.pow(d, 2) * Math.sin(tetha * Math.PI / 180) / 8;
+
+      // Calculate rea of sector
+      double aSec;
+      if (this.almostFull) {
+        aSec = Math.PI * Math.pow(d, 2) * (360 - tetha) / 1440;
+        this.wettedArea = aSec + aTri;
+        this.wettedPerimeter = Math.PI * d * (360 - tetha) / 360;
+      } else {
+        aSec = tetha * Math.PI * Math.pow(d, 2) / 1440;
+        this.wettedArea = aSec - aTri;
+        this.wettedPerimeter = Math.PI * d * tetha / 360;
+      }
+
+      this.hydraulicRadius = this.wettedArea / this.wettedPerimeter;
+      this.averageVelocity = (1 / this.manningRoughness) * Math.sqrt(this.bedSlope) *
+              Math.pow(this.hydraulicRadius, (2.0/ 3.0));
+      calculatedDischarge = this.averageVelocity * this.wettedArea;
+    }
+    this.diameter = d;
+
+    this.isCalculationSuccessful = true;
+  }
+
+  /**
+   * Solve for discharge
+   */
   private void solveForDischarge() {
     // Shorten the variables
     double h = this.waterDepth;
     double d = this.diameter;
-    double S = this.bedSlope;
-    double n = this.manningRoughness;
     double tetha;
 
     this.almostFull = (h >= (d / 2));
@@ -125,7 +176,7 @@ public class CircularOpenChannel extends OpenChannel {
 
     // Calculate rea of sector
     double aSec;
-    if (almostFull) {
+    if (this.almostFull) {
       aSec = Math.PI * Math.pow(d, 2) * (360 - tetha) / 1440;
       this.wettedArea = aSec + aTri;
       this.wettedPerimeter = Math.PI * d * (360 - tetha) / 360;
@@ -151,8 +202,10 @@ public class CircularOpenChannel extends OpenChannel {
   private boolean isValidInputs() {
 
     try {
-      if (this.waterDepth >= this.diameter) {
-        throw new DimensionException("Water depth must be less than the pipe diameter.");
+      if (this.unknown != Unknown.DIAMETER) {
+        if (this.waterDepth >= this.diameter) {
+          throw new DimensionException("Water depth must be less than the pipe diameter.");
+        }
       }
     } catch (Exception ex) {
       this.isCalculationSuccessful = false;
