@@ -27,6 +27,9 @@ public class CircularOpenChannel extends OpenChannel {
   // Almost full (More than half full)
   private boolean almostFull;
 
+  // Area of triangle in the section of circular channel
+  private double triangleArea;
+
   /**
    * Creates a {@code CircularOpenChannel} with default unknown as discharge.
    */
@@ -118,9 +121,11 @@ public class CircularOpenChannel extends OpenChannel {
    */
   private void solveForWaterDepth() {
     // Shorten the variables
-    double h = 0;
+    double h = 0;       // Water depth
     double d = this.diameter;
     double theta;
+    double aTri = 0;    // Area of triangle
+    double aSec;        // Area of sector
 
     calculatedDischarge = 0.0;
 
@@ -135,11 +140,9 @@ public class CircularOpenChannel extends OpenChannel {
       }
 
       // Calculate area of triangle
-      double aTri;
       aTri = Math.pow(d, 2) * Math.sin(theta * Math.PI / 180) / 8;
 
       // Calculate rea of sector
-      double aSec;
       if (this.almostFull) {
         aSec = Math.PI * Math.pow(d, 2) * (360 - theta) / 1440;
         this.wettedArea = aSec + aTri;
@@ -156,8 +159,8 @@ public class CircularOpenChannel extends OpenChannel {
       calculatedDischarge = this.averageVelocity * this.wettedArea;
     }
 
+    this.triangleArea = aTri;
     this.waterDepth = h;
-
     this.isCalculationSuccessful = true;
   }
 
@@ -169,6 +172,8 @@ public class CircularOpenChannel extends OpenChannel {
     double h = this.waterDepth;
     double d = this.diameter;
     double theta;
+    double aTri = 0;    // Area of triangle
+    double aSec;        // Area of sector
 
     // Make sure bed slope starts at zero
     this.bedSlope = 0;
@@ -186,11 +191,9 @@ public class CircularOpenChannel extends OpenChannel {
       }
 
       // Calculate area of triangle
-      double aTri;
       aTri = Math.pow(d, 2) * Math.sin(theta * Math.PI / 180) / 8;
 
       // Calculate rea of sector
-      double aSec;
       if (this.almostFull) {
         aSec = Math.PI * Math.pow(d, 2) * (360 - theta) / 1440;
         this.wettedArea = aSec + aTri;
@@ -206,7 +209,7 @@ public class CircularOpenChannel extends OpenChannel {
               Math.pow(this.hydraulicRadius, (2.0/ 3.0));
       calculatedDischarge = this.averageVelocity * this.wettedArea;
     }
-
+    this.triangleArea = aTri;
     this.isCalculationSuccessful = true;
   }
 
@@ -218,6 +221,8 @@ public class CircularOpenChannel extends OpenChannel {
     double h = this.waterDepth;
     double d = h;
     double theta;
+    double aTri = 0;    // Area of triangle
+    double aSec;        // Area of sector
 
     calculatedDischarge = 0.0;
 
@@ -232,11 +237,9 @@ public class CircularOpenChannel extends OpenChannel {
       }
 
       // Calculate area of triangle
-      double aTri;
       aTri = Math.pow(d, 2) * Math.sin(theta * Math.PI / 180) / 8;
 
       // Calculate rea of sector
-      double aSec;
       if (this.almostFull) {
         aSec = Math.PI * Math.pow(d, 2) * (360 - theta) / 1440;
         this.wettedArea = aSec + aTri;
@@ -253,7 +256,7 @@ public class CircularOpenChannel extends OpenChannel {
       calculatedDischarge = this.averageVelocity * this.wettedArea;
     }
     this.diameter = d;
-
+    this.triangleArea = aTri;
     this.isCalculationSuccessful = true;
   }
 
@@ -265,6 +268,8 @@ public class CircularOpenChannel extends OpenChannel {
     double h = this.waterDepth;
     double d = this.diameter;
     double theta;
+    double aTri = 0;    // Area of triangle
+    double aSec;        // Area of sector
 
     this.almostFull = (h >= (d / 2));
 
@@ -276,11 +281,9 @@ public class CircularOpenChannel extends OpenChannel {
     }
 
     // Calculate area of triangle
-    double aTri;
     aTri = Math.pow(d, 2) * Math.sin(theta * Math.PI / 180) / 8;
 
     // Calculate rea of sector
-    double aSec;
     if (this.almostFull) {
       aSec = Math.PI * Math.pow(d, 2) * (360 - theta) / 1440;
       this.wettedArea = aSec + aTri;
@@ -292,11 +295,10 @@ public class CircularOpenChannel extends OpenChannel {
     }
 
     this.hydraulicRadius = this.wettedArea / this.wettedPerimeter;
-
     this.averageVelocity = (1 / this.manningRoughness) * Math.sqrt(this.bedSlope) *
             Math.pow(this.hydraulicRadius, (2.0/ 3.0));
     this.discharge = this.averageVelocity * this.wettedArea;
-
+    this.triangleArea = aTri;
     this.isCalculationSuccessful = true;
   }
 
@@ -324,6 +326,94 @@ public class CircularOpenChannel extends OpenChannel {
    * Solve for critical flow properties (e.g. critical depth, froude number, flow type ...)
    */
   private void solveForCriticalFlow() {
+    // Q^2 / g
+    double Q2g = Math.pow(this.discharge, 2) / this.GRAVITY_METRIC;
 
+    // Other side of equation
+    double tester = 0;
+
+    // Critical depth
+    double yc = 0;
+
+    // Critical area, perimeter, hydraulic radius, critical slope
+    double Ac = 0, Pc = 0, Rc, Sc;
+
+    // Top width
+    double T;
+
+    // Angle of water edges from the center
+    double theta = 0;
+
+    // Triangle at critical flow
+    double aTriC;
+
+    // Sector at critical flow
+    double aSecC;
+
+    while (tester < Q2g) {
+      yc += 0.00001;
+
+      T = solveForTopWidth(yc);
+
+      // Calculate theta
+      if (yc > (this.diameter/2)) {
+        // Almost full
+        theta = 2 * Math.acos((2 * yc - this.diameter) / this.diameter) * 180 / Math.PI;
+      } else {
+        // Less than half full
+        theta = 2 * Math.acos((this.diameter - 2 * yc) / this.diameter) * 180 / Math.PI;
+      }
+
+      // Calculate area of triangle
+      aTriC = Math.pow(this.diameter, 2) * Math.sin(theta * Math.PI / 180) / 8;
+
+      // Calculate area of sector
+      if (yc > (this.diameter/2)) {
+        aSecC = Math.PI * Math.pow(this.diameter, 2) * (360 - theta) / 1440;
+        Ac = aSecC + aTriC;
+        Pc = Math.PI * this.diameter * (360 - theta) / 360;
+      } else {
+        aSecC = theta * Math.PI * Math.pow(this.diameter, 2) / 1440;
+        Ac = aSecC - aTriC;
+        Pc = Math.PI * this.diameter * theta / 360;
+      }
+      // Compare the equation
+      tester = Math.pow(Ac, 3) / T;
+    }
+    
+    // Pass to global variable
+    this.criticalDepth = yc;
+
+    // Hydraulic radius at critical flow
+    Rc = Ac / Pc;
+
+    Sc = Math.pow(this.discharge / (Ac * Math.pow(Rc, (2.0/3.0))) * this.manningRoughness, 2);
+    this.criticalSlope = Sc;
+
+    // Solve for froude number
+    this.hydraulicDepth = this.wettedArea / solveForTopWidth(this.waterDepth);
+    this.froudeNumber = this.averageVelocity / Math.sqrt(this.GRAVITY_METRIC * this.hydraulicDepth);
+
+    // Select the flow type
+    this.flowType();
+  }
+
+  /**
+   * Solves for water top width in circular channels.
+   * @param y Water depth
+   * @return Double Top width
+   */
+  private double solveForTopWidth(double y) {
+    double topWidth;
+    double triangleHeight;
+
+    if (this.almostFull) {
+      triangleHeight = y - this.diameter/2;
+    } else {
+      triangleHeight = this.diameter/2 - y;
+    }
+    topWidth = 2 * this.triangleArea / triangleHeight;
+
+    return topWidth;
   }
 }
