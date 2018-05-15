@@ -333,65 +333,64 @@ public class CircularOpenChannel extends OpenChannel {
     double tester = 0;
 
     // Critical depth
-    double yc = 0;
+    double yc = 0.0;
 
     // Critical area, perimeter, hydraulic radius, critical slope
     double Ac = 0, Pc = 0, Rc, Sc;
 
     // Top width
-    double T;
+    double T = 0;
 
     // Angle of water edges from the center
-    double theta = 0;
+    double thetaC = 0;
 
     // Triangle at critical flow
-    double aTriC;
+    double aTriC = 0;
 
     // Sector at critical flow
     double aSecC;
 
     while (tester < Q2g) {
-      yc += 0.00001;
-
-      T = solveForTopWidth(yc);
+      yc += 0.0001;
 
       // Calculate theta
       if (yc > (this.diameter/2)) {
         // Almost full
-        theta = 2 * Math.acos((2 * yc - this.diameter) / this.diameter) * 180 / Math.PI;
+        thetaC = 2 * Math.acos((2 * yc - this.diameter) / this.diameter) * 180 / Math.PI;
       } else {
         // Less than half full
-        theta = 2 * Math.acos((this.diameter - 2 * yc) / this.diameter) * 180 / Math.PI;
+        thetaC = 2 * Math.acos((this.diameter - 2 * yc) / this.diameter) * 180 / Math.PI;
       }
 
       // Calculate area of triangle
-      aTriC = Math.pow(this.diameter, 2) * Math.sin(theta * Math.PI / 180) / 8;
-
+      aTriC = Math.pow(this.diameter, 2) * Math.sin(thetaC * Math.PI / 180) / 8;
+      T = solveForTopWidth(yc, aTriC, (yc > (this.diameter/2)));
       // Calculate area of sector
       if (yc > (this.diameter/2)) {
-        aSecC = Math.PI * Math.pow(this.diameter, 2) * (360 - theta) / 1440;
+        aSecC = Math.PI * Math.pow(this.diameter, 2) * (360 - thetaC) / 1440;
         Ac = aSecC + aTriC;
-        Pc = Math.PI * this.diameter * (360 - theta) / 360;
+        Pc = Math.PI * this.diameter * (360 - thetaC) / 360;
       } else {
-        aSecC = theta * Math.PI * Math.pow(this.diameter, 2) / 1440;
+        aSecC = thetaC * Math.PI * Math.pow(this.diameter, 2) / 1440;
         Ac = aSecC - aTriC;
-        Pc = Math.PI * this.diameter * theta / 360;
+        Pc = Math.PI * this.diameter * thetaC / 360;
       }
-      // Compare the equation
+
+      // Compare the equation for equality  
       tester = Math.pow(Ac, 3) / T;
     }
-    
+
     // Pass to global variable
     this.criticalDepth = yc;
 
     // Hydraulic radius at critical flow
     Rc = Ac / Pc;
 
-    Sc = Math.pow(this.discharge / (Ac * Math.pow(Rc, (2.0/3.0))) * this.manningRoughness, 2);
+    Sc = Math.pow((this.discharge / (Ac * Math.pow(Rc, (2.0/3.0))) * this.manningRoughness), 2);
     this.criticalSlope = Sc;
 
     // Solve for froude number
-    this.hydraulicDepth = this.wettedArea / solveForTopWidth(this.waterDepth);
+    this.hydraulicDepth = this.wettedArea / solveForTopWidth(this.waterDepth, this.triangleArea, this.almostFull);
     this.froudeNumber = this.averageVelocity / Math.sqrt(this.GRAVITY_METRIC * this.hydraulicDepth);
 
     // Select the flow type
@@ -399,20 +398,22 @@ public class CircularOpenChannel extends OpenChannel {
   }
 
   /**
-   * Solves for water top width in circular channels.
-   * @param y Water depth
-   * @return Double Top width
+   * Solves for the top width given the following parameters
+   * @param y Depth of water
+   * @param triangleArea Area of triangle consisting of water intersection with the pipe and center point
+   * @param almostFull A boolean indicating if y is more than half of the pipe
+   * @return Double Top width of the water
    */
-  private double solveForTopWidth(double y) {
+  private double solveForTopWidth(double y, double triangleArea, boolean almostFull) {
     double topWidth;
     double triangleHeight;
 
-    if (this.almostFull) {
+    if (almostFull) {
       triangleHeight = y - this.diameter/2;
     } else {
       triangleHeight = this.diameter/2 - y;
     }
-    topWidth = 2 * this.triangleArea / triangleHeight;
+    topWidth = 2 * triangleArea / triangleHeight;
 
     return topWidth;
   }

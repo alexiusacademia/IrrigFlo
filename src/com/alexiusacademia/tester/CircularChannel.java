@@ -23,6 +23,7 @@ public class CircularChannel {
 
     if (coc.analyze()) {
       printLine("Discharge = " + coc.getDischarge());
+      printLine("Water depth = " + coc.getWaterDepth());
       printLine("Wetted perimeter = " + coc.getWettedPerimeter());
       printLine("Critical depth = " + coc.getCriticalDepth());
       printLine("Froude number = " + coc.getFroudeNumber());
