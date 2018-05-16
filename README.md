@@ -3,6 +3,8 @@ IrrigFlo is an open source java library for solving hydraulics flow calculations
 The aim of the library is to help other developers in creating their own desktop applications for hydraulics engineering
 that has the capability of commercial softwares.
 
+[![Build Status](https://travis-ci.org/alexiusacademia/IrrigFlo.svg?branch=master)](https://travis-ci.org/alexiusacademia/IrrigFlo)
+
 ### Installation:
 To install the library, download it from the [releases](https://github.com/alexiusacademia/IrrigFlo/releases) page. It is advisable to download the latest release for updated features.
 
