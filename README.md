@@ -48,6 +48,17 @@ public class TrapezoidalChannel {
     printLine("= = = = = = = = = = =");
   }
 }
+
+// Start of output
+Circular open channel
+= = = = = = = = = = = = = =
+Discharge = 0.687263130787826
+Water depth = 0.7
+Wetted perimeter = 2.085893287217503
+Critical depth = 0.44559999999996724
+Froude number = 0.42106818161340415
+Critical slope = 0.004793932865164748
+// End of output
 ```
 
 Below describes the proposed content of the project:
