@@ -88,6 +88,8 @@
   <property name="project.jdk.classpath" value="jdk.classpath.1.8"/>
   <!-- Register Custom Compiler Taskdefs -->
   <property name="javac2.home" value="${idea.home}/lib"/>
+  <property name="src" location="src" />
+  <property name="build" location="build" />
   <path id="javac2.classpath">
     <fileset dir="${javac2.home}">
       <include name="javac2.jar"/>
@@ -103,88 +105,18 @@
   
   <!-- Modules -->
   
-  
-  <!-- Module IrrigFlo -->
-  
-  <dirname property="module.irrigflo.basedir" file="${ant.file}"/>
-  
-  
-  <property name="module.jdk.home.irrigflo" value="${project.jdk.home}"/>
-  <property name="module.jdk.bin.irrigflo" value="${project.jdk.bin}"/>
-  <property name="module.jdk.classpath.irrigflo" value="${project.jdk.classpath}"/>
-  
-  <property name="compiler.args.irrigflo" value="-encoding UTF-8 -source 8 -target 8 ${compiler.args}"/>
-  
-  <property name="irrigflo.output.dir" value="${module.irrigflo.basedir}/out/production/IrrigFlo"/>
-  <property name="irrigflo.testoutput.dir" value="${module.irrigflo.basedir}/out/test/IrrigFlo"/>
-  
-  <path id="irrigflo.module.bootclasspath">
-    <!-- Paths to be included in compilation bootclasspath -->
-  </path>
-  
-  <path id="irrigflo.module.production.classpath">
-    <path refid="${module.jdk.classpath.irrigflo}"/>
-  </path>
-  
-  <path id="irrigflo.runtime.production.module.classpath">
-    <pathelement location="${irrigflo.output.dir}"/>
-  </path>
-  
-  <path id="irrigflo.module.classpath">
-    <path refid="${module.jdk.classpath.irrigflo}"/>
-    <pathelement location="${irrigflo.output.dir}"/>
-  </path>
-  
-  <path id="irrigflo.runtime.module.classpath">
-    <pathelement location="${irrigflo.testoutput.dir}"/>
-    <pathelement location="${irrigflo.output.dir}"/>
-  </path>
-  
-  
-  <patternset id="excluded.from.module.irrigflo">
-    <patternset refid="ignored.files"/>
-  </patternset>
-  
-  <patternset id="excluded.from.compilation.irrigflo">
-    <patternset refid="excluded.from.module.irrigflo"/>
-  </patternset>
-  
-  <path id="irrigflo.module.sourcepath">
-    <dirset dir="${module.irrigflo.basedir}">
-      <include name="src"/>
-    </dirset>
-  </path>
-  
-  
-  <target name="compile.module.irrigflo" depends="compile.module.irrigflo.production,compile.module.irrigflo.tests" description="Compile module IrrigFlo"/>
-  
-  <target name="compile.module.irrigflo.production" depends="register.custom.compilers" description="Compile module IrrigFlo; production classes">
-    <mkdir dir="${irrigflo.output.dir}"/>
-    <javac2 destdir="${irrigflo.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.irrigflo}/javac">
-      <compilerarg line="${compiler.args.irrigflo}"/>
-      <bootclasspath refid="irrigflo.module.bootclasspath"/>
-      <classpath refid="irrigflo.module.production.classpath"/>
-      <src refid="irrigflo.module.sourcepath"/>
-      <patternset refid="excluded.from.compilation.irrigflo"/>
-    </javac2>
-    
-    <copy todir="${irrigflo.output.dir}">
-      <fileset dir="${module.irrigflo.basedir}/src">
-        <patternset refid="compiler.resources"/>
-        <type type="file"/>
-      </fileset>
-    </copy>
-  </target>
-  
-  <target name="compile.module.irrigflo.tests" depends="register.custom.compilers,compile.module.irrigflo.production" description="compile module IrrigFlo; test classes" unless="skip.tests"/>
-  
-  <target name="clean.module.irrigflo" description="cleanup module">
-    <delete dir="${irrigflo.output.dir}"/>
-    <delete dir="${irrigflo.testoutput.dir}"/>
-  </target>
+  <import file="${basedir}/module_irrigflo.xml"/>
   
   <target name="init" description="Build initialization">
     <!-- Perform any build initialization in this target -->
+    <tstamp/>
+    <!-- Create the build directory structure used by compile -->
+    <mkdir dir="${build}"/>
+  </target>
+
+  <target name="compile" depends="init" description="compile the source">
+    <!-- Compile the java code from ${src} into ${build} -->
+    <javac srcdir="${src}" destdir="${build}"/>
   </target>
   
   <target name="clean" depends="clean.module.irrigflo" description="cleanup all"/>
