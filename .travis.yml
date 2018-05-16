@@ -1,2 +1,8 @@
 language: java
 jdk: oraclejdk8
+
+before_install:
+  - cd Java
+
+script:
+  - ant test
