@@ -118,6 +118,30 @@ public class IrregularSectionChannel extends OpenChannel {
       this.maxWaterElevation = leftBankElevation;
     }
 
+    // Number of waterline intersections
+    int leftIntersections = 0, rightIntersections = 0;
+
+    // Remove points above the waterline intersection at the banks
+    List<Point> newPoints = new ArrayList<>();
+
+    for (int i = 0; i < this.points.size(); i++) {
+      float x = this.points.get(i).getX();
+      float y = this.points.get(i).getY();
+
+      // Look for the intersection at the left side of the channel
+      if (leftIntersections == 0) {
+        if (y <= this.waterElevation && i > 0) {
+          leftIntersections++;
+          // Solve for the intersection point using interpolation
+          float x1 = this.points.get(i - 1).getX();
+          float y1 = this.points.get(i - 1).getY();
+          float x2 = this.points.get(i).getX();
+          float y2 = this.points.get(i).getY();
+          float x3 = (this.waterElevation - y1) * (x2 - x1) / (y2 - y1) + x1;
+          newPoints.add(new Point(x3, this.waterElevation));
+        }
+      }
+    }
 
   }
 
@@ -150,6 +174,10 @@ public class IrregularSectionChannel extends OpenChannel {
     try {
       if (this.waterElevation > this.maxWaterElevation) {
         throw new InvalidValueException("Water elevation is above the lowest bank. Overflow!");
+      }
+
+      if (this.waterElevation < calculateLowestPoint()) {
+        throw new DimensionException("Water surface was set below the lowest ground.");
       }
 
     } catch (Exception e) {
