@@ -124,8 +124,10 @@ public class IrregularSectionChannel extends OpenChannel {
     // Remove points above the waterline intersection at the banks
     List<Point> newPoints = new ArrayList<>();
 
+    float x1, x2, x3, y1, y2;
+
     for (int i = 0; i < this.points.size(); i++) {
-      float x = this.points.get(i).getX();
+      // float x = this.points.get(i).getX();
       float y = this.points.get(i).getY();
 
       // Look for the intersection at the left side of the channel
@@ -133,16 +135,101 @@ public class IrregularSectionChannel extends OpenChannel {
         if (y <= this.waterElevation && i > 0) {
           leftIntersections++;
           // Solve for the intersection point using interpolation
-          float x1 = this.points.get(i - 1).getX();
-          float y1 = this.points.get(i - 1).getY();
-          float x2 = this.points.get(i).getX();
-          float y2 = this.points.get(i).getY();
-          float x3 = (this.waterElevation - y1) * (x2 - x1) / (y2 - y1) + x1;
+          x1 = this.points.get(i - 1).getX();
+          y1 = this.points.get(i - 1).getY();
+          x2 = this.points.get(i).getX();
+          y2 = this.points.get(i).getY();
+          x3 = (this.waterElevation - y1) * (x2 - x1) / (y2 - y1) + x1;
           newPoints.add(new Point(x3, this.waterElevation));
+        }
+      }
+
+      // Look for the intersection at the right side of the channel
+      if (rightIntersections == 0) {
+        if (y >= this.waterElevation) {
+          rightIntersections++;
+          x1 = this.points.get(i - 1).getX();
+          y1 = this.points.get(i - 1).getY();
+          x2 = this.points.get(i).getX();
+          y2 = this.points.get(i).getY();
+          x3 = (this.waterElevation - y1) * (x2 - x1) / (y2 - y1) + x1;
+          newPoints.add(new Point(x3, this.waterElevation));
+        }
+      }
+
+      if (leftIntersections == 1) {
+        if (rightIntersections == 0) {
+          newPoints.add(this.points.get(i));
         }
       }
     }
 
+    // Hydraulic elements
+
+
+  }
+
+  /**
+   * Implementation of the shoelace formula in computing area of a polygon with
+   * given vertices.
+   * @param points The vertices covered by the cross sectional area.
+   * @return Double Polygon area
+   */
+  private double polygonArea(List<Point> points) {
+    // Number of vertices of the polygon
+    int n = points.size();
+
+    // Initialize area
+    double area = 0;
+    int j;
+
+    for (int i = 0; i < n; i++) {
+      j = (i + 1) % n;
+      area += points.get(i).getX() * points.get(j).getY();
+      area -= points.get(j).getX() * points.get(i).getY();
+    }
+
+    area = Math.abs(area) / 2;
+
+    return area;
+  }
+
+  /**
+   * Get the total distance covered by multiple points
+   * @param points The vertices covered by the cross sectional area.
+   * @return Double Polygon perimeter
+   */
+  private double polygonPerimeter(List<Point> points) {
+    // Initialize perimeter
+    double perimeter = 0;
+
+    // Number of vertices of the polygon
+    int n = points.size();
+
+    Point p1, p2;
+
+    for (int i = 0; i < (n-1); i++) {
+      p1 = points.get(i);
+      p2 = points.get(i + 1);
+      perimeter += distanceBetweenTwoPoints(p1, p2);
+    }
+
+    return perimeter;
+  }
+
+  /**
+   * Calculate the distance between two given points.
+   * @param p1 First point
+   * @param p2 Second point
+   * @return Double The distance between the 2 points
+   */
+  private double distanceBetweenTwoPoints(Point p1, Point p2) {
+    float x1, y1, x2, y2;
+    x1 = p1.getX();
+    y1 = p1.getY();
+    x2 = p2.getX();
+    y2 = p2.getY();
+    return Math.sqrt(Math.pow((y2 - y1), 2) + Math.pow((x2 - x1), 2));
   }
 
   /**
