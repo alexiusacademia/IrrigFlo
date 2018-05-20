@@ -6,7 +6,8 @@ public class OpenChannel {
    * Constants
    ***************************************** */
   protected final double GRAVITY_METRIC = 9.81;
-  protected final double DEPTH_INCREMENT_TRIAL = 0.00001;
+  protected final double DEPTH_TRIAL_INCREMENT = 0.00001;
+  protected final double SLOPE_TRIAL_INCREMENT = 0.0000001;
 
   /** ****************************************
    * Properties
