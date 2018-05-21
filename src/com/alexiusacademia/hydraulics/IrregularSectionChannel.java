@@ -104,6 +104,7 @@ public class IrregularSectionChannel extends OpenChannel {
               this.errMessage = e.getMessage();
             }
       }
+      solveForCriticalFlow();
       return isCalculationSuccessful;
     }
     return false;
@@ -369,5 +370,82 @@ public class IrregularSectionChannel extends OpenChannel {
       return false;
     }
     return true;
+  }
+
+  /**
+   * Solve for critical flow properties (e.g. critical depth, froude number, flow type ...)
+   */
+  private void solveForCriticalFlow() {
+    double Q2g = Math.pow(this.discharge, 2) / this.GRAVITY_METRIC;
+
+    double tester = 0;
+
+    // Critical depth elevation
+    // Initially at the lowest elevation
+    double yc = this.calculateLowestPoint();
+
+    // Critical area, perimeter, hydraulic radius, critical slope
+    double Ac = 0, Pc, Rc, Sc;
+
+    // Top width
+    double T = 0;
+
+    while (tester < Q2g) {
+      yc += this.DEPTH_TRIAL_INCREMENT;
+
+      // Get the new points
+      // Number of waterline intersections
+      int leftIntersections = 0, rightIntersections = 0;
+
+      // Remove points above the waterline intersection at the banks
+      List<Point> newPoints = new ArrayList<>();
+
+      float x1, x2, x3, y1, y2;
+
+      for (int i = 0; i < this.points.size(); i++) {
+        // float x = this.points.get(i).getX();
+        float y = this.points.get(i).getY();
+
+        // Look for the intersection at the left side of the channel
+        if (leftIntersections == 0) {
+          if (y <= yc && i > 0) {
+            leftIntersections++;
+            // Solve for the intersection point using interpolation
+            x1 = this.points.get(i - 1).getX();
+            y1 = this.points.get(i - 1).getY();
+            x2 = this.points.get(i).getX();
+            y2 = this.points.get(i).getY();
+            x3 = (float) ((yc - y1) * (x2 - x1) / (y2 - y1) + x1);
+            newPoints.add(new Point(x3, (float) yc));
+          }
+        }
+
+        // Look for the intersection at the right side of the channel
+        if (rightIntersections == 0) {
+          if (y >= yc && i > 0) {
+            rightIntersections++;
+            x1 = this.points.get(i - 1).getX();
+            y1 = this.points.get(i - 1).getY();
+            x2 = this.points.get(i).getX();
+            y2 = this.points.get(i).getY();
+            x3 = (float) ((yc - y1) * (x2 - x1) / (y2 - y1) + x1);
+            newPoints.add(new Point(x3, (float) yc));
+          }
+        }
+
+        if (leftIntersections == 1) {
+          if (rightIntersections == 0) {
+            newPoints.add(this.points.get(i));
+          }
+        }
+      }
+
+      // Calculate the area covered
+      Ac = polygonArea(newPoints);
+      T = distanceBetweenTwoPoints(newPoints.get(0), newPoints.get(newPoints.size() - 1));
+      tester = Math.pow(Ac, 3) / T;
+    }
+
+
   }
 }
