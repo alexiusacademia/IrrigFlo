@@ -367,6 +367,26 @@ public class IrregularSectionChannel extends OpenChannel {
         throw new DimensionException("Water surface was set below the lowest ground.");
       }
 
+      if (this.points.size() < 3) {
+        throw new DimensionException("Invalid number of points. Minimum is three (3) points.");
+      }
+
+      if (this.manningRoughness <= 0) {
+        throw new InvalidValueException("Manning's roughness must be greater than zero.");
+      }
+
+      if (this.unknown != Unknown.DISCHARGE) {
+        if (this.discharge <= 0) {
+          throw new InvalidValueException("Discharge must be greater than zero.");
+        }
+      }
+
+      if (this.unknown != Unknown.BED_SLOPE) {
+        if (this.bedSlope <= 0) {
+          throw new InvalidValueException("Bed slope must not be flat or less than zero.");
+        }
+      }
+
     } catch (Exception e) {
       this.isCalculationSuccessful = false;
       this.errMessage = e.getMessage();
