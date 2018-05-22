@@ -12,20 +12,19 @@ public class IrregularSectionChannel extends OpenChannel {
   /* **********************************
    * Properties
    ***********************************/
-  // Unknown class
-  public enum Unknown {
+
+  public enum Unknown {                 // Unknown class
     DISCHARGE,
     BED_SLOPE
   }
 
-  // Unknown
-  private Unknown unknown;
 
-  // List of points for the channel profile
-  private List<Point> points;
+  private Unknown unknown;              // Unknown
+  private List<Point> points;           // List of points for the channel profile
   private float maxWaterElevation;
   private float waterElevation;
   private double calculatedDischarge;
+  private double criticalWaterElevation;
 
   /* **********************************
    * Setters
@@ -57,6 +56,10 @@ public class IrregularSectionChannel extends OpenChannel {
 
   public float getWaterElevation() {
     return waterElevation;
+  }
+
+  public double getCriticalWaterElevation() {
+    return criticalWaterElevation;
   }
 
   /**
@@ -390,15 +393,15 @@ public class IrregularSectionChannel extends OpenChannel {
     // Top width
     double T = 0;
 
+    // Remove points above the waterline intersection at the banks
+    List<Point> newPoints = new ArrayList<>();
+
     while (tester < Q2g) {
       yc += this.DEPTH_TRIAL_INCREMENT;
 
       // Get the new points
       // Number of waterline intersections
       int leftIntersections = 0, rightIntersections = 0;
-
-      // Remove points above the waterline intersection at the banks
-      List<Point> newPoints = new ArrayList<>();
 
       float x1, x2, x3, y1, y2;
 
@@ -440,12 +443,21 @@ public class IrregularSectionChannel extends OpenChannel {
         }
       }
 
-      // Calculate the area covered
-      Ac = polygonArea(newPoints);
-      T = distanceBetweenTwoPoints(newPoints.get(0), newPoints.get(newPoints.size() - 1));
       tester = Math.pow(Ac, 3) / T;
     }
 
+    this.criticalWaterElevation = yc;
+    // Calculate the area covered
+    Ac = polygonArea(newPoints);
+    Pc = polygonPerimeter(newPoints);
+    Rc = Ac / Pc;
+    Sc = Math.pow(this.discharge / (Ac * Math.pow(Rc, (2.0/3.0))) * this.manningRoughness, 2);
+    this.criticalSlope = Sc;
+    T = distanceBetweenTwoPoints(newPoints.get(0), newPoints.get(newPoints.size() - 1));
+    this.hydraulicDepth = this.wettedArea / T;
+    this.froudeNumber = this.averageVelocity / Math.sqrt(this.GRAVITY_METRIC * this.hydraulicDepth);
 
+    // Select the flow type
+    this.flowType();
   }
 }

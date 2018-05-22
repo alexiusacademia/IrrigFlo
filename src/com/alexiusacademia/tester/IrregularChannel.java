@@ -45,6 +45,10 @@ public class IrregularChannel {
       printLine("Wetted area = " + isc.getWettedArea());
       printLine("Wetted perimeter = " + isc.getWettedPerimeter());
       printLine("Hydraulic Radius = " + isc.getHydraulicRadius());
+      printLine("Water elevation = " + isc.getWaterElevation());
+      printLine("Critical water depth elev. = " + isc.getCriticalWaterElevation());
+      printLine("Froude number = " + isc.getFroudeNumber());
+      printLine("Flow type = " + isc.getFlowType());
     } else {
       printLine("An error has occurred: " + isc.getErrMessage());
     }
