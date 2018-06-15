@@ -1,6 +1,8 @@
 package com.alexiusacademia.hydraulics;
 
-public class OpenChannel {
+import java.io.Serializable;
+
+public class OpenChannel implements Serializable {
 
   /** ****************************************
    * Constants

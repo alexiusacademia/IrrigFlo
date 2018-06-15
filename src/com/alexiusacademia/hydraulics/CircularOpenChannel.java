@@ -30,6 +30,9 @@ public class CircularOpenChannel extends OpenChannel {
   // Area of triangle in the section of circular channel
   private double triangleArea;
 
+  // Percentage full
+  private double percentFull;
+
   /**
    * Creates a {@code CircularOpenChannel} with default unknown as discharge.
    */
@@ -89,6 +92,14 @@ public class CircularOpenChannel extends OpenChannel {
     return almostFull;
   }
 
+  /**
+   * Returns the percentage full of the pipe (depth / diameter).
+   * @return Percent
+   */
+  public double getPercentFull() {
+    return percentFull;
+  }
+
   /* ********************************
    * Methods
    **********************************/
@@ -110,6 +121,7 @@ public class CircularOpenChannel extends OpenChannel {
           break;
       }
       solveForCriticalFlow();
+      solveForPercentFull();
       return this.isCalculationSuccessful;
     }
 
@@ -416,5 +428,9 @@ public class CircularOpenChannel extends OpenChannel {
     topWidth = 2 * triangleArea / triangleHeight;
 
     return topWidth;
+  }
+
+  private void solveForPercentFull() {
+    this.percentFull = this.waterDepth / this.diameter * 100;
   }
 }
