@@ -11,7 +11,7 @@ public class IrregularChannel {
     IrregularSectionChannel isc = new IrregularSectionChannel();
 
     List<Point> pts = new ArrayList<>();
-
+    /*
     pts.add(new Point(0, 0));
     pts.add(new Point(1.524f, -0.64f));
     pts.add(new Point(3.049f, -1.036f));
@@ -33,12 +33,17 @@ public class IrregularChannel {
     pts.add(new Point(27.439f, -1.096f));
     pts.add(new Point(28.963f, -0.975f));
     pts.add(new Point(30.488f, 0));
+    */
+    pts.add(new Point(0, 1f));
+    pts.add(new Point(0, 0));
+    pts.add(new Point(1.0f, 0));
+    pts.add(new Point(1.0f, 1f));
 
     isc.setPoints(pts);
     isc.setUnknown(IrregularSectionChannel.Unknown.DISCHARGE);
     isc.setBedSlope(0.001);
-    isc.setWaterElevation(0);
-    isc.setManningRoughness(0.03);
+    isc.setWaterElevation(0.989f);
+    isc.setManningRoughness(0.015);
 
     if (isc.analyze()) {
       printLine("Discharge = " + isc.getDischarge());
@@ -51,6 +56,8 @@ public class IrregularChannel {
       printLine("Flow type = " + isc.getFlowType());
     } else {
       printLine("An error has occurred: " + isc.getErrMessage());
+      printLine("Lowest bank = " + isc.getMaxWaterElevation());
+      printLine("Water elev. = " + isc.getWaterElevation());
     }
 
   }
