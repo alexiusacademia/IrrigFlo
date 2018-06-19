@@ -117,20 +117,6 @@ public class IrregularSectionChannel extends OpenChannel {
    * Solve for the unknown bed slope
    */
   private void solveForBedSlope() {
-    // Count the points
-    int numberOfPoints = this.points.size();
-
-    // Elevation of left and right bank
-    float leftBankElevation = this.points.get(0).getY();
-    float rightBankElevation = this.points.get(numberOfPoints - 1).getY();
-
-    // Get the lower of the 2 banks
-    if (leftBankElevation > rightBankElevation) {
-      this.maxWaterElevation = rightBankElevation;
-    } else {
-      this.maxWaterElevation = leftBankElevation;
-    }
-
     // Number of waterline intersections
     int leftIntersections = 0, rightIntersections = 0;
 
@@ -198,20 +184,6 @@ public class IrregularSectionChannel extends OpenChannel {
    * Solve for the unknown discharge
    */
   private void solveForDischarge() {
-    // Count the points
-    int numberOfPoints = this.points.size();
-
-    // Elevation of left and right bank
-    float leftBankElevation = this.points.get(0).getY();
-    float rightBankElevation = this.points.get(numberOfPoints - 1).getY();
-
-    // Get the lower of the 2 banks
-    if (leftBankElevation > rightBankElevation) {
-      this.maxWaterElevation = rightBankElevation;
-    } else {
-      this.maxWaterElevation = leftBankElevation;
-    }
-
     // Number of waterline intersections
     int leftIntersections = 0, rightIntersections = 0;
 
@@ -358,6 +330,19 @@ public class IrregularSectionChannel extends OpenChannel {
    * @return Boolean True if all inputs are valid.
    */
   private boolean isValidInputs() {
+    // First, solve for the lowest bank
+    int numberOfPoints = this.points.size();
+    // Elevation of left and right bank
+    float leftBankElevation = this.points.get(0).getY();
+    float rightBankElevation = this.points.get(numberOfPoints - 1).getY();
+
+    // Get the lower of the 2 banks
+    if (leftBankElevation > rightBankElevation) {
+      this.maxWaterElevation = rightBankElevation;
+    } else {
+      this.maxWaterElevation = leftBankElevation;
+    }
+
     try {
       if (this.waterElevation > this.maxWaterElevation) {
         throw new InvalidValueException("Water elevation is above the lowest bank. Overflow!");
