@@ -62,6 +62,10 @@ public class IrregularSectionChannel extends OpenChannel {
     return criticalWaterElevation;
   }
 
+  public Unknown getUnknown() {
+    return unknown;
+  }
+
   /**
    * Create an empty {@code IrregularSectionChannel}
    */
@@ -145,7 +149,7 @@ public class IrregularSectionChannel extends OpenChannel {
 
       // Look for the intersection at the right side of the channel
       if (rightIntersections == 0) {
-        if (y >= this.waterElevation) {
+        if (y >= this.waterElevation && i > 0) {
           rightIntersections++;
           x1 = this.points.get(i - 1).getX();
           y1 = this.points.get(i - 1).getY();

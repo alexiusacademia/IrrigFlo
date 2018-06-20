@@ -40,7 +40,8 @@ public class IrregularChannel {
     pts.add(new Point(1.0f, 1f));
 
     isc.setPoints(pts);
-    isc.setUnknown(IrregularSectionChannel.Unknown.DISCHARGE);
+    isc.setUnknown(IrregularSectionChannel.Unknown.BED_SLOPE);
+    isc.setDischarge(1);
     isc.setBedSlope(0.001);
     isc.setWaterElevation(0.989f);
     isc.setManningRoughness(0.015);
@@ -54,6 +55,7 @@ public class IrregularChannel {
       printLine("Critical water depth elev. = " + isc.getCriticalWaterElevation());
       printLine("Froude number = " + isc.getFroudeNumber());
       printLine("Flow type = " + isc.getFlowType());
+      printLine("Bed Slope = " + isc.getBedSlope());
     } else {
       printLine("An error has occurred: " + isc.getErrMessage());
       printLine("Lowest bank = " + isc.getMaxWaterElevation());
