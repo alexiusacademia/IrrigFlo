@@ -21,6 +21,7 @@ public class IrregularSectionChannel extends OpenChannel {
 
   private Unknown unknown;              // Unknown
   private List<Point> points;           // List of points for the channel profile
+  private List<Point> newPoints;
   private float maxWaterElevation;
   private float waterElevation;
   private double calculatedDischarge;
@@ -48,6 +49,10 @@ public class IrregularSectionChannel extends OpenChannel {
 
   public List<Point> getPoints() {
     return points;
+  }
+
+  public List<Point> getNewPoints() {
+    return newPoints;
   }
 
   public float getMaxWaterElevation() {
@@ -166,7 +171,7 @@ public class IrregularSectionChannel extends OpenChannel {
         }
       }
     }
-
+    this.newPoints = newPoints;
     double trialSlope = 0;
     calculatedDischarge = 0;
 
@@ -233,6 +238,8 @@ public class IrregularSectionChannel extends OpenChannel {
         }
       }
     }
+
+    this.newPoints = newPoints;
 
     // Hydraulic elements
     this.wettedArea = polygonArea(newPoints);
@@ -313,8 +320,8 @@ public class IrregularSectionChannel extends OpenChannel {
    * @return Double Lowest point
    */
   private float calculateLowestPoint() {
-    List<Float> elevations = new ArrayList<Float>();
-    float lowest = 0;
+    List<Float> elevations = new ArrayList<>();
+    float lowest = this.points.get(0).getY();
 
     for (Point p : this.points) {
       elevations.add(p.getY());
@@ -325,7 +332,6 @@ public class IrregularSectionChannel extends OpenChannel {
         lowest = el;
       }
     }
-
     return lowest;
   }
 
@@ -403,7 +409,7 @@ public class IrregularSectionChannel extends OpenChannel {
     double T = 0;
 
     // Remove points above the waterline intersection at the banks
-    List<Point> newPoints = new ArrayList<>();
+    List<Point> newPointsForCriticalFlow = new ArrayList<>();
 
     while (tester < Q2g) {
       yc += this.DEPTH_TRIAL_INCREMENT;
@@ -428,7 +434,7 @@ public class IrregularSectionChannel extends OpenChannel {
             x2 = this.points.get(i).getX();
             y2 = this.points.get(i).getY();
             x3 = (float) ((yc - y1) * (x2 - x1) / (y2 - y1) + x1);
-            newPoints.add(new Point(x3, (float) yc));
+            newPointsForCriticalFlow.add(new Point(x3, (float) yc));
           }
         }
 
@@ -441,13 +447,13 @@ public class IrregularSectionChannel extends OpenChannel {
             x2 = this.points.get(i).getX();
             y2 = this.points.get(i).getY();
             x3 = (float) ((yc - y1) * (x2 - x1) / (y2 - y1) + x1);
-            newPoints.add(new Point(x3, (float) yc));
+            newPointsForCriticalFlow.add(new Point(x3, (float) yc));
           }
         }
 
         if (leftIntersections == 1) {
           if (rightIntersections == 0) {
-            newPoints.add(this.points.get(i));
+            newPointsForCriticalFlow.add(this.points.get(i));
           }
         }
       }
@@ -456,13 +462,21 @@ public class IrregularSectionChannel extends OpenChannel {
     }
 
     this.criticalWaterElevation = yc;
+
+    System.out.println("Point for critical flow:");
+    System.out.println("Number of points: " + newPointsForCriticalFlow.size());
+    for (Point p : newPointsForCriticalFlow) {
+      System.out.println(p.getX() + ", " + p.getY());
+    }
+    System.out.println("Lowest point = " + calculateLowestPoint());
     // Calculate the area covered
-    Ac = polygonArea(newPoints);
-    Pc = polygonPerimeter(newPoints);
+    Ac = polygonArea(newPointsForCriticalFlow);
+    Pc = polygonPerimeter(newPointsForCriticalFlow);
     Rc = Ac / Pc;
     Sc = Math.pow(this.discharge / (Ac * Math.pow(Rc, (2.0/3.0))) * this.manningRoughness, 2);
     this.criticalSlope = Sc;
-    T = distanceBetweenTwoPoints(newPoints.get(0), newPoints.get(newPoints.size() - 1));
+    T = distanceBetweenTwoPoints(this.newPoints.get(0), this.newPoints.get(this.newPoints.size() - 1));
+
     this.hydraulicDepth = this.wettedArea / T;
     this.froudeNumber = this.averageVelocity / Math.sqrt(this.GRAVITY_METRIC * this.hydraulicDepth);
 

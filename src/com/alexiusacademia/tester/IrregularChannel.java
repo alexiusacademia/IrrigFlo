@@ -34,17 +34,19 @@ public class IrregularChannel {
     pts.add(new Point(28.963f, -0.975f));
     pts.add(new Point(30.488f, 0));
     */
-    pts.add(new Point(0, 1f));
-    pts.add(new Point(0, 0));
-    pts.add(new Point(1.0f, 0));
-    pts.add(new Point(1.0f, 1f));
+    pts.add(new Point(0, 100));
+    pts.add(new Point(5, 99));
+    pts.add(new Point(10, 96));
+    pts.add(new Point(15, 95.5f));
+    pts.add(new Point(20, 98));
+    pts.add(new Point(25, 100));
 
     isc.setPoints(pts);
-    isc.setUnknown(IrregularSectionChannel.Unknown.BED_SLOPE);
+    isc.setUnknown(IrregularSectionChannel.Unknown.DISCHARGE);
     isc.setDischarge(1);
-    isc.setBedSlope(0.001);
-    isc.setWaterElevation(0.989f);
-    isc.setManningRoughness(0.015);
+    isc.setBedSlope(0.002);
+    isc.setWaterElevation(99.5f);
+    isc.setManningRoughness(0.03);
 
     if (isc.analyze()) {
       printLine("Discharge = " + isc.getDischarge());
@@ -53,9 +55,11 @@ public class IrregularChannel {
       printLine("Hydraulic Radius = " + isc.getHydraulicRadius());
       printLine("Water elevation = " + isc.getWaterElevation());
       printLine("Critical water depth elev. = " + isc.getCriticalWaterElevation());
+      printLine("Critical slope = " + isc.getCriticalSlope());
       printLine("Froude number = " + isc.getFroudeNumber());
       printLine("Flow type = " + isc.getFlowType());
       printLine("Bed Slope = " + isc.getBedSlope());
+      printLine("Hydraulic depth = " + isc.getHydraulicDepth());
     } else {
       printLine("An error has occurred: " + isc.getErrMessage());
       printLine("Lowest bank = " + isc.getMaxWaterElevation());
