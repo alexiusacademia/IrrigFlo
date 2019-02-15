@@ -102,18 +102,30 @@ public class OpenChannel implements Serializable {
   }
 
   public double getWaterDepth() {
+    if (this.unit == Unit.ENGLISH) {
+      return waterDepth * METER_TO_FOOT;
+    }
     return waterDepth;
   }
 
   public double getWettedPerimeter() {
+    if (this.unit == Unit.ENGLISH) {
+      return wettedPerimeter * METER_TO_FOOT;
+    }
     return wettedPerimeter;
   }
 
   public double getWettedArea() {
+    if (this.unit == Unit.ENGLISH) {
+      return wettedArea * Math.pow(METER_TO_FOOT, 2);
+    }
     return wettedArea;
   }
 
   public double getHydraulicRadius() {
+    if (this.unit == Unit.ENGLISH) {
+      return hydraulicRadius * METER_TO_FOOT;
+    }
     return hydraulicRadius;
   }
 
@@ -130,14 +142,23 @@ public class OpenChannel implements Serializable {
   }
 
   public double getHydraulicDepth() {
+    if (this.unit == Unit.ENGLISH) {
+      return hydraulicDepth * METER_TO_FOOT;
+    }
     return hydraulicDepth;
   }
 
   public double getDischargeIntensity() {
+    if (this.unit == Unit.ENGLISH) {
+      return dischargeIntensity * Math.pow(METER_TO_FOOT, 2);
+    }
     return dischargeIntensity;
   }
 
   public double getCriticalDepth() {
+    if (this.unit == Unit.ENGLISH) {
+      return criticalDepth * METER_TO_FOOT;
+    }
     return criticalDepth;
   }
 
@@ -173,11 +194,19 @@ public class OpenChannel implements Serializable {
   }
 
   public void setDischarge(double discharge) {
-    this.discharge = discharge;
+    if (this.unit == Unit.ENGLISH) {
+      this.discharge = discharge / Math.pow(METER_TO_FOOT, 3);
+    } else {
+      this.discharge = discharge;
+    }
   }
 
   public void setWaterDepth(double waterDepth) {
-    this.waterDepth = waterDepth;
+    if (this.unit == Unit.ENGLISH) {
+      this.waterDepth = waterDepth / METER_TO_FOOT;
+    } else {
+      this.waterDepth = waterDepth;
+    }
   }
 
   public void setManningRoughness(double manningRoughness) {
