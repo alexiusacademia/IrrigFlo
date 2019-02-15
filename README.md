@@ -73,7 +73,7 @@ Below describes the proposed content of the project:
 - [x]  Rectangular Channel
 - [x]  Trapezoidal Channel
 - [x]  Circular Channel
-- [ ]  Irregular Section Channel
+- [x]  Irregular Section Channel
 
 **Weirs**
 ---
