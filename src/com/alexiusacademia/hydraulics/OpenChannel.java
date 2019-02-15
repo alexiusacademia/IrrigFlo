@@ -10,6 +10,7 @@ public class OpenChannel implements Serializable {
   protected final double GRAVITY_METRIC = 9.81;
   protected final double DEPTH_TRIAL_INCREMENT = 0.00001;
   protected final double SLOPE_TRIAL_INCREMENT = 0.0000001;
+  protected final double METER_TO_FOOT = 3.28;
 
   /** ****************************************
    * Properties
@@ -18,6 +19,11 @@ public class OpenChannel implements Serializable {
     CRITICAL,
     SUBCRITICAL,
     SUPERCRITICAL
+  }
+
+  public enum Unit {
+    METRIC,
+    ENGLISH
   }
 
   /** Channel flow rate */
@@ -62,6 +68,12 @@ public class OpenChannel implements Serializable {
   /** Describe message about an error. */
   protected String errMessage;
 
+  /**
+   * Unit to be used in setting and retrieving values.
+   * Default is set to metric system.
+   */
+  protected Unit unit = Unit.METRIC;
+
   /** Creates a parameterless instance of OpenChannel. */
   public OpenChannel() {
 
@@ -72,10 +84,16 @@ public class OpenChannel implements Serializable {
    ***************************************** */
 
   public double getDischarge() {
+    if (this.unit == Unit.ENGLISH) {
+      return discharge * Math.pow(METER_TO_FOOT, 3);
+    }
     return discharge;
   }
 
   public double getAverageVelocity() {
+    if (this.unit == Unit.ENGLISH) {
+      return averageVelocity * METER_TO_FOOT;
+    }
     return averageVelocity;
   }
 
@@ -146,6 +164,10 @@ public class OpenChannel implements Serializable {
   /** ***************************************
    * Setters
    **************************************** */
+
+  public void setUnit(Unit unit) {
+    this.unit = unit;
+  }
   public void setBedSlope(double bedSlope) {
     this.bedSlope = bedSlope;
   }
