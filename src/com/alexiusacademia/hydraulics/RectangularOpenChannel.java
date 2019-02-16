@@ -41,6 +41,8 @@ public class RectangularOpenChannel extends OpenChannel {
   public RectangularOpenChannel() {
     // Default unknown
     this.unknown = Unknown.DISCHARGE;
+
+    this.unit = Unit.METRIC;
   }
 
   /**
@@ -79,7 +81,12 @@ public class RectangularOpenChannel extends OpenChannel {
    * @param baseWidth Bottom width or channel width for rectangular sections.
    */
   public void setBaseWidth(double baseWidth) {
-    this.baseWidth = baseWidth;
+    if (this.unit == Unit.ENGLISH) {
+      this.baseWidth = baseWidth / METER_TO_FOOT;
+    } else {
+      this.baseWidth = baseWidth;
+    }
+
   }
 
   /**
@@ -101,6 +108,9 @@ public class RectangularOpenChannel extends OpenChannel {
    * @return baseWidth
    */
   public double getBaseWidth() {
+    if (this.unit == Unit.ENGLISH) {
+      return baseWidth * METER_TO_FOOT;
+    }
     return baseWidth;
   }
 
