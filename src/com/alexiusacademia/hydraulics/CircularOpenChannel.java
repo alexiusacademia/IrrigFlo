@@ -38,6 +38,7 @@ public class CircularOpenChannel extends OpenChannel {
    */
   public CircularOpenChannel() {
     this.unknown = Unknown.DISCHARGE;
+    this.unit = Unit.METRIC;
   }
 
   /**
@@ -57,7 +58,11 @@ public class CircularOpenChannel extends OpenChannel {
    * @param diameter Pipe internal diameter
    */
   public void setDiameter(double diameter) {
-    this.diameter = diameter;
+    if (this.unit == Unit.ENGLISH) {
+      this.diameter = diameter / METER_TO_FOOT;
+    } else {
+      this.diameter = diameter;
+    }
   }
 
   public void setUnknown(Unknown unknown) {
@@ -73,6 +78,9 @@ public class CircularOpenChannel extends OpenChannel {
    * @return Pipe diameter
    */
   public double getDiameter() {
+    if (this.unit == Unit.ENGLISH) {
+      return this.diameter * METER_TO_FOOT;
+    }
     return diameter;
   }
 
