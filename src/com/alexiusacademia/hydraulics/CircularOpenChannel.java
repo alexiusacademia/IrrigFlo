@@ -47,6 +47,7 @@ public class CircularOpenChannel extends OpenChannel {
    */
   public CircularOpenChannel(Unknown unknown) {
     this.unknown = unknown;
+    this.unit = Unit.METRIC;
   }
 
   /* **********************************

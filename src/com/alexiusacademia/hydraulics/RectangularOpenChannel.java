@@ -51,6 +51,7 @@ public class RectangularOpenChannel extends OpenChannel {
    */
   public RectangularOpenChannel(Unknown unknown) {
     this.unknown = unknown;
+    this.unit = Unit.METRIC;
   }
 
   /**
@@ -65,6 +66,7 @@ public class RectangularOpenChannel extends OpenChannel {
   public RectangularOpenChannel(Unknown unknown, double bedSlope, double baseWidth, double waterDepth,
                                 double manningRoughness) {
     this.unknown = unknown;
+    this.unit = Unit.METRIC;
     this.bedSlope = bedSlope;
     this.baseWidth = baseWidth;
     this.waterDepth = waterDepth;

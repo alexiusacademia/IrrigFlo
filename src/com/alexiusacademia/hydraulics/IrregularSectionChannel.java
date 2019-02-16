@@ -71,6 +71,7 @@ public class IrregularSectionChannel extends OpenChannel {
    */
   public IrregularSectionChannel() {
     this.unknown = Unknown.DISCHARGE;
+    this.unit = Unit.METRIC;
   }
 
   /**
@@ -79,6 +80,7 @@ public class IrregularSectionChannel extends OpenChannel {
    */
   public IrregularSectionChannel(Unknown unknown) {
     this.unknown = unknown;
+    this.unit = Unit.METRIC;
   }
 
   /**
@@ -87,6 +89,8 @@ public class IrregularSectionChannel extends OpenChannel {
    * @param pts List of Points
    */
   public IrregularSectionChannel(Unknown unknown, List<Point> pts) {
+    this.unknown = Unknown.DISCHARGE;
+    this.unit = Unit.METRIC;
     this.points = pts;
   }
 

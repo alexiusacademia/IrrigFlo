@@ -36,6 +36,8 @@ public class TrapezoidalOpenChannel extends OpenChannel {
   public TrapezoidalOpenChannel() {
     // Set the default unknown if not set
     this.unknown = Unknown.DISCHARGE;
+
+    this.unit = Unit.METRIC;
   }
 
   /**
@@ -44,6 +46,7 @@ public class TrapezoidalOpenChannel extends OpenChannel {
    */
   public TrapezoidalOpenChannel(Unknown unknown) {
     this.unknown = unknown;
+    this.unit = Unit.METRIC;
   }
 
   /**
@@ -63,6 +66,7 @@ public class TrapezoidalOpenChannel extends OpenChannel {
     this.waterDepth = waterDepth;
     this.sideSlope = sideSlope;
     this.manningRoughness = manningRoughness;
+    this.unit = Unit.METRIC;
   }
 
   /* **********************************
